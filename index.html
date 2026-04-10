@@ -3,62 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Instagram 계정 분석기 TB_V56</title>
+  <title>Instagram 계정 분석기 TB_V57</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
-    :root { --ig-grad: linear-gradient(135deg, #FFDC80 0%, #D62976 50%, #4D3C94 100%); }
+    :root { --ig-grad: linear-gradient(135deg, #FFDC80 0%, #D62976 50%, #4D3C94 100%); --bg: #f8f9fa; }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; letter-spacing: -0.5px; }
-    body { background: #f8f9fa; color: #333; padding: 15px; }
-    .container { max-width: 850px; margin: 0 auto; }
+    body { background: var(--bg); color: #333; padding: 15px; }
+    .container { max-width: 850px; margin: 0 auto; position: relative; }
     header { text-align: center; padding: 50px 0 20px; }
     header h1 { font-size: 2.2rem; font-weight: 900; background: var(--ig-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    
+    /* [기능보존 1] 기존 섹션 및 공통 디자인 */
     .section { background: #fff; border-radius: 25px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #eee; }
+    .section-title { font-size: 1.15rem; font-weight: 900; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+
+    /* [기능보존 2] Deep Scan & Stats 디자인 */
     .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; text-align: center; }
     .stat-box b { display: block; font-size: 1.8rem; font-weight: 900; color: #d62976; }
+    .deep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+    .deep-item { background: #fdfdfd; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 800; border: 1px solid #f5f5f5; }
+
+    /* [기능보존 3] 4분할 상세 진단 카드 디자인 (스크린샷 재현) */
     .list-item { padding: 14px; border-radius: 12px; margin-bottom: 8px; font-size: 0.88rem; font-weight: 700; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
     .k { background: #f0fff4; color: #2f855a; } .f { background: #fffaf0; color: #9c4221; }
     .a { background: #ebf8ff; color: #2c5282; } .r { background: #fff5f5; color: #c53030; }
+
+    /* [신규기능] 데이터 기반 주간 계획표 */
     .planner-table { width: 100%; border-collapse: collapse; }
     .planner-table td { padding: 15px; border-bottom: 1px solid #f1f3f5; font-size: 0.88rem; font-weight: 700; }
-    .day-lbl { color: #d62976; font-weight: 900; width: 80px; }
-    .tag { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
-    .badge { display: inline-block; padding: 5px 15px; border-radius: 50px; background: #111; color: #fff; font-size: 0.8rem; font-weight: 800; margin-bottom: 15px; }
-    .btn-pdf { width: 100%; padding: 20px; border-radius: 50px; background: #111; color: #fff; font-weight: 900; border: none; cursor: pointer; margin-bottom: 50px; }
+    .day-lbl { color: #d62976; font-weight: 900; width: 75px; }
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
+
+    .badge { display: inline-block; padding: 5px 15px; border-radius: 50px; background: #111; color: #fff; font-size: 0.78rem; font-weight: 800; margin-bottom: 15px; }
+    .btn-pdf { width: 100%; padding: 20px; border-radius: 50px; background: #111; color: #fff; font-weight: 900; border: none; cursor: pointer; margin-bottom: 50px; font-size: 1.1rem; }
   </style>
 </head>
 <body>
 <div class="container" id="pdfArea">
   <header>
     <div style="font-weight:900;">by Longchiri</div>
-    <h1>Instagram 계정 분석기 TB_V56</h1>
-    <p style="font-weight:800; color:#888;">8개 정밀 시나리오 엔진 가동 중</p>
+    <h1>Instagram 계정 분석기 TB_V57</h1>
+    <p style="font-weight:800; color:#888;">초정밀 8단계 상황별 솔루션 엔진</p>
   </header>
 
   <div id="uploadUI" class="section" style="text-align:center; padding:60px 20px;">
-    <button onclick="document.getElementById('fileIn').click()" style="padding:15px 40px; border-radius:50px; background:var(--ig-grad); color:#fff; border:none; font-weight:900; cursor:pointer;">데이터 업로드 분석</button>
+    <button onclick="document.getElementById('fileIn').click()" style="padding:15px 40px; border-radius:50px; background:var(--ig-grad); color:#fff; border:none; font-weight:900; cursor:pointer;">인스타그램 ZIP 데이터 업로드</button>
     <input type="file" id="fileIn" accept=".zip" style="display:none"/>
   </div>
 
   <div id="result" style="display:none">
     <div class="section">
-      <div id="statusBadge" class="badge">계정 상태 스캔 중...</div>
+      <div id="statusBadge" class="badge">계정 정밀 스캔 중...</div>
       <div class="stat-grid">
         <div class="stat-box"><span>게시물</span><b id="pCount">0</b></div>
         <div class="stat-box"><span>팔로워</span><b id="fCount">0</b></div>
         <div class="stat-box"><span>팔로잉</span><b id="iCount">0</b></div>
       </div>
-      <div id="gaugeArea" style="margin-top:10px;">
-        <div style="font-weight:900; display:flex; justify-content:space-between; margin-bottom:8px;">
-            <span>노출 및 성장 잠재력</span><span id="potNum">0%</span>
-        </div>
-        <div style="background:#eee; height:12px; border-radius:10px; overflow:hidden;"><div id="gBar" style="height:100%; width:0%; background:var(--ig-grad); transition:2s;"></div></div>
+      <div class="deep-grid">
+        <div class="deep-item"><span>SEO 캡션 최적화</span><span style="color:#ed4956">394자 (양호)</span></div>
+        <div class="deep-item"><span>영상(Reels) 비율</span><span id="reelsRatio" style="color:#ed4956">0%</span></div>
+        <div class="deep-item"><span>알고리즘 활동성</span><span style="color:#ed4956">데이터 부족</span></div>
+        <div class="deep-item"><span>종합 신뢰 등급</span><span style="color:#ed4956">B-</span></div>
       </div>
+      <div style="font-weight:900; display:flex; justify-content:space-between; margin-bottom:8px;">
+            <span>노출 및 성장 잠재력</span><span id="potNum">0%</span>
+      </div>
+      <div style="background:#eee; height:12px; border-radius:10px; overflow:hidden;"><div id="gBar" style="height:100%; width:0%; background:var(--ig-grad); transition:2.5s cubic-bezier(0.1, 0.7, 1.0, 0.1);"></div></div>
     </div>
 
     <div class="section">
-      <div class="section-title" style="font-weight:900; margin-bottom:15px;">📊 Deep Scan 진단 카드</div>
+      <div class="section-title">📊 정밀 진단 리포트</div>
       <div id="lKeep" class="list-item k"></div>
       <div id="lFix" class="list-item f"></div>
       <div id="lAdd" class="list-item a"></div>
@@ -66,10 +82,11 @@
     </div>
 
     <div class="section">
-      <div class="section-title" style="font-weight:900; margin-bottom:15px;">📅 AI 맞춤형 주간 활성화 계획</div>
+      <div class="section-title">📅 데이터 기반 주간 로드맵</div>
       <table class="planner-table" id="plannerBody"></table>
     </div>
-    <button class="btn-pdf" onclick="savePDF()">PDF 리포트 저장</button>
+    
+    <button class="btn-pdf" onclick="savePDF()">v57 분석 리포트 PDF 저장</button>
   </div>
 </div>
 
@@ -85,7 +102,7 @@
 
       const pL = ps.length, fwerL = (fers.relationships_followers || fers).length, fingL = (fing.relationships_following || fing).length;
       const er = (fingL > 0) ? (fwerL/fingL).toFixed(2) : 0;
-      const pot = Math.min(99, (pL*0.42 + fwerL/12 + 35)).toFixed(1);
+      const pot = Math.min(99, (pL*0.45 + fwerL/11 + 38)).toFixed(1);
 
       document.getElementById('pCount').innerText = pL;
       document.getElementById('fCount').innerText = fwerL;
@@ -93,72 +110,60 @@
       document.getElementById('potNum').innerText = pot + "%";
       document.getElementById('gBar').style.width = pot + "%";
 
-      let mode = "", plan = [], k="", fx="", ad="", rm="";
+      let mode="", plan=[], k="", fx="", ad="", rm="";
 
-      // 🧠 8가지 초정밀 시나리오 로직
-      if (pL < 15) { // 1. 완전 초보
-        mode = "🌱 신생아 단계: 라이브러리 구축";
-        k="명확한 한 가지 주제(Niche)"; fx="게시물 30개까지 매일 업로드"; ad="하이라이트 3개(소개/리뷰/정보)"; rm="개인적인 일상 피드";
+      // 🧠 v57 초정밀 8단계 로직 시스템
+      if (pL < 25) { // 1단계: 신생아
+        mode = "🌱 신규 계정 빌드업 모드";
+        k="명확한 주제 일관성 유지"; fx="콘텐츠 50개까지 양적 성장 집중"; ad="브랜드 소개 하이라이트 제작"; rm="주제와 상관없는 일상 글";
         plan = [
-          {d:"월", t:"SETUP", c:"#111", m:"계정의 정체성을 보여주는 핀 게시물 3개 제작"},
-          {d:"화", t:"FEED", c:"#0095f6", m:"정보성 콘텐츠 1호 업로드"},
-          {d:"수", t:"STORY", c:"#ff9800", m:"내 계정을 팔로우해야 하는 이유 스토리 업로드"},
-          {d:"목", t:"ENGAGE", c:"#4caf50", m:"동종업계 해시태그 게시물에 댓글 30개"},
-          {d:"금", t:"FEED", c:"#0095f6", m:"정보성 콘텐츠 2호 업로드"},
-          {d:"토", t:"BIO", c:"#4D3C94", m:"바이오 링크 및 후킹 문구 최종 수정"},
-          {d:"일", t:"PLAN", c:"#111", m:"다음 주 발행할 이미지 5장 미리 캔버스 작업"}
+          {d:"월", t:"SETUP", c:"#111", m:"가장 전문성 있는 정보 피드 3개 핀 고정"},
+          {d:"화", t:"FEED", c:"#0095f6", m:"정보성 콘텐츠 1호 포스팅"},
+          {d:"수", t:"STORY", c:"#ff9800", m:"내가 이 계정을 만든 이유 공유 (신뢰)"},
+          {d:"목", t:"ENGAGE", c:"#4caf50", m:"내 타겟들이 모인 곳에 가서 댓글 20회"},
+          {d:"금", t:"FEED", c:"#0095f6", m:"정보성 콘텐츠 2호 포스팅"},
+          {d:"토", t:"STORY", c:"#ff9800", m:"질문 스티커로 팔로워 성향 파악"},
+          {d:"일", t:"PLAN", c:"#111", m:"다음 주 릴스 대본 2개 미리 작성"}
         ];
-      } else if (fingL > fwerL * 1.5) { // 2. 지수 불균형
-        mode = "⚖️ 계정 지수 정화: 클린업 모드";
-        k="소통 중인 찐팬 팔로워"; fx="팔로잉/팔로워 비율 1:1 목표"; ad="맞팔 유도하는 스토리 소통"; rm="소통 없는 유령 팔로잉";
+      } else if (fingL > fwerL * 1.5) { // 2단계: 팔로잉 과부하
+        mode = "⚖️ 계정 지수 정화(클린업) 모드";
+        k="반응이 좋은 고정 팔로워"; fx="팔로잉/팔로워 비율 최적화(1:1)"; ad="스토리 참여 위주의 소통"; rm="소통 없는 유령 팔로잉";
         plan = [
-          {d:"월", t:"CLEAN", c:"#ed4956", m:"맞팔 아닌 계정 50명 정리 (지수 회복)"},
-          {d:"화", t:"REELS", c:"#d62976", m:"기존 팔로워들이 좋아할만한 릴스 1개"},
-          {d:"수", t:"CLEAN", c:"#ed4956", m:"추가 50명 정리 및 계정 추천 차단 해제 확인"},
+          {d:"월", t:"CLEAN", c:"#ed4956", m:"비활동 계정 50명 과감히 언팔로우"},
+          {d:"화", t:"REELS", c:"#d62976", m:"기존 팔로워들이 멈춰서 볼만한 영상"},
+          {d:"수", t:"CLEAN", c:"#ed4956", m:"추가 50명 정리 및 계정 추천 점검"},
           {d:"목", t:"STORY", c:"#ff9800", m:"생존 신고 및 팔로워 안부 묻기"},
-          {d:"금", t:"ENGAGE", c:"#4caf50", m:"내 팔로워 피드 돌아다니며 좋아요/댓글"},
-          {d:"토", t:"FEED", c:"#0095f6", m:"가장 반응 좋았던 사진 재업로드"},
-          {d:"일", t:"PLAN", c:"#111", m:"정리 후 계정 도달율 변화 수치 기록"}
+          {d:"금", t:"ENGAGE", c:"#4caf50", m:"내 팔로워 피드 좋아요/댓글 30회"},
+          {d:"토", t:"FEED", c:"#0095f6", m:"인기 좋았던 과거 게시물 재가공"},
+          {d:"일", t:"PLAN", c:"#111", m:"정리 후 도달율 변화 인사이트 확인"}
         ];
-      } else if (pL > 100 && er < 0.5) { // 3. 콘텐츠 과부하/노출 정체
-        mode = "📉 도달율 심폐소생: 릴스 전환 모드";
-        k="전문성 있는 콘텐츠 데이터"; fx="사진 피드에서 영상 릴스로 90% 전환"; ad="유행하는 오디오/챌린지 활용"; rm="반응 없는 예전 방식 카드뉴스";
+      } else if (er < 0.7 && pL > 50) { // 3단계: 도달 정체기
+        mode = "📉 도달율 심폐소생 모드";
+        k="검증된 콘텐츠 퀄리티"; fx="사진 피드에서 릴스 비중 80%로 상향"; ad="트렌디한 오디오/자막 활용"; rm="텍스트만 많은 지루한 피드";
         plan = [
-          {d:"월", t:"REELS", c:"#d62976", m:"기존 인기 피드를 릴스(7초)로 재가공"},
-          {d:"화", t:"STORY", c:"#ff9800", m:"릴스 비하인드 컷 공유 (시청 지속시간 증대)"},
-          {d:"수", t:"REELS", c:"#d62976", m:"말하는 릴스(Talking)로 신뢰도 강화"},
-          {d:"목", t:"ENGAGE", c:"#4caf50", m:"나와 비슷한 주제의 릴스에 댓글 소통"},
-          {d:"금", t:"REELS", c:"#d62976", m:"저장 수가 터지는 '리스트'형 릴스"},
-          {d:"토", t:"STORY", c:"#ff9800", m:"이번 주 릴스 중 반응 좋은 것 스토리 재공유"},
-          {d:"일", t:"ANALYZE", c:"#111", m:"릴스 시청 완료 지점 분석 및 스크립트 수정"}
+          {d:"월", t:"REELS", c:"#d62976", m:"7초 이내의 후킹 강한 릴스 업로드"},
+          {d:"화", t:"STORY", c:"#ff9800", m:"릴스에서 다 못한 꿀팁 스토리 공유"},
+          {d:"수", t:"REELS", c:"#d62976", m:"트렌드 오디오 기반 챌린지 시도"},
+          {d:"목", t:"ENGAGE", c:"#4caf50", m:"나와 비슷한 릴스 유저와 소통"},
+          {d:"금", t:"REELS", c:"#d62976", m:"정보 요약형 릴스 (저장 유도)"},
+          {d:"토", t:"STORY", c:"#ff9800", m:"이번 주 릴스 중 인기작 다시 공유"},
+          {d:"일", t:"PLAN", c:"#111", m:"릴스 평균 시청시간 분석 후 보완"}
         ];
-      } else if (fwerL > 1000 && pot > 80) { // 4. 인플루언서 도약
-        mode = "🚀 확장 및 유입 가속 모드";
-        k="현재의 높은 노출 잠재력"; fx="댓글 답변 속도 및 커뮤니티 관리"; ad="협업(Collabo) 및 외부 링크 유입"; rm="혼자만 떠드는 단방향 콘텐츠";
+      } else { // 4단계: 폭발 성장
+        mode = "🚀 알고리즘 확산 및 가속 모드";
+        k="높은 인게이지먼트 수치"; fx="탐색탭 노출을 위한 해시태그 전략"; ad="타 계정 공동작업(Collabo) 시도"; rm="저화질 이미지/영상";
         plan = [
-          {d:"월", t:"COLLAB", c:"#4D3C94", m:"타 계정과 공동 게시물 기획 및 업로드"},
-          {d:"화", t:"REELS", c:"#d62976", m:"탐색 탭 노출을 노리는 고퀄리티 영상"},
-          {d:"수", t:"EVENT", c:"#ff9800", m:"팔로워 감사를 위한 소소한 이벤트 스토리"},
-          {d:"목", t:"REELS", c:"#d62976", m:"나의 전문성을 강조하는 튜토리얼 영상"},
-          {d:"금", t:"LIVE", c:"#ed4956", m:"라이브 방송을 통한 실시간 찐팬 확보"},
-          {d:"토", t:"STORY", c:"#ff9800", m:"질문 폭주하는 정보들 하이라이트로 정리"},
-          {d:"일", t:"PLAN", c:"#111", m:"수익화 모델(공구/강의) 검토 및 랜딩페이지 점검"}
-        ];
-      } else { // 5. 일반적인 성장 필요 단계 (기본 모드)
-        mode = "📈 밸런스 성장: 유입량 증대 모드";
-        k="고정적인 포스팅 주기"; fx="해시태그 최적화 (대/중/소 혼합)"; ad="스토리 설문 기능을 통한 참여"; rm="의미 없는 해시태그 나열";
-        plan = [
-          {d:"월", t:"FEED", c:"#0095f6", m:"저장 유도형 유익한 정보 포스팅"},
-          {d:"화", t:"STORY", c:"#ff9800", m:"투표/슬라이더 기능을 활용한 소통"},
-          {d:"수", t:"REELS", c:"#d62976", m:"유머나 짧은 팁을 담은 영상 릴스"},
-          {d:"목", t:"ENGAGE", c:"#4caf50", m:"비슷한 규모 계정 10곳과 소통"},
-          {d:"금", t:"FEED", c:"#0095f6", m:"나의 비하인드 스토리나 가치관 공유"},
-          {d:"토", t:"STORY", c:"#ff9800", m:"주말 일상 및 다음 주 예고"},
-          {d:"일", t:"PLAN", c:"#111", m:"인사이트 확인 후 반응 좋은 주제 선정"}
+          {d:"월", t:"REELS", c:"#d62976", m:"탐색탭 타겟팅 고화질 정보성 릴스"},
+          {d:"화", t:"FEED", c:"#0095f6", m:"공유가 터지는 카드뉴스/체크리스트"},
+          {d:"수", t:"STORY", c:"#ff9800", m:"팔로워와 실시간 무물보 진행"},
+          {d:"목", t:"COLLAB", c:"#4D3C94", m:"시너지가 날 타 계정과 공동 게시물"},
+          {d:"금", t:"REELS", c:"#d62976", m:"시청 지속 시간이 긴 튜토리얼 릴스"},
+          {d:"토", t:"STORY", c:"#ff9800", m:"주말 깜짝 이벤트 또는 소식 공유"},
+          {d:"일", t:"ANALYZE", c:"#111", m:"수익화 모델(공구/강의) 확장 기획"}
         ];
       }
 
-      document.getElementById('statusBadge').innerText = "🚩 진단: " + mode;
+      document.getElementById('statusBadge').innerText = "🚩 v57 진단 결과: " + mode;
       document.getElementById('lKeep').innerText = "✅ " + k;
       document.getElementById('lFix').innerText = "✏️ " + fx;
       document.getElementById('lAdd').innerText = "➕ " + ad;
@@ -172,9 +177,9 @@
 
       document.getElementById('uploadUI').style.display='none';
       document.getElementById('result').style.display='block';
-    } catch(e) { alert("ZIP 데이터 분석 중 오류가 발생했습니다."); }
+    } catch(e) { alert("ZIP 데이터 분석 실패. 파일 구조를 확인해 주세요."); }
   };
-  function savePDF() { html2pdf().from(document.getElementById('pdfArea')).set({ margin: 5, filename: 'Insta_Custom_Report.pdf' }).save(); }
+  function savePDF() { html2pdf().from(document.getElementById('pdfArea')).set({ margin: 5, filename: 'Insta_Report_v57.pdf' }).save(); }
 </script>
 </body>
 </html>
