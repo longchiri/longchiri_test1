@@ -18,6 +18,22 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       font-weight: 800;
     }
+
+    /* 드래그 앤 드롭 영역 스타일 */
+    .upload-area {
+      background: #fff; border: 2px dashed #ddd; border-radius: 16px;
+      padding: 40px 20px; text-align: center; transition: all 0.3s;
+      cursor: pointer; margin-bottom: 20px;
+    }
+    .upload-area.dragover {
+      background: #f0ebff; border-color: #833ab4; transform: scale(1.02);
+    }
+    .upload-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
+    .upload-btn {
+      display: inline-block; margin-top: 15px; padding: 10px 25px;
+      background: #222; color: #fff; border-radius: 8px; font-weight: 600;
+    }
+
     .card {
       background: #fff; border-radius: 16px; padding: 28px;
       margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
@@ -37,14 +53,18 @@
 
 <header>
   <h1>Instagram 계정 분석기</h1>
-  <p>데이터 심층 분석 및 니치 태그 발굴</p>
+  <p>파일을 끌어다 놓거나 클릭하여 분석하세요</p>
 </header>
 
-<div class="card">
+<div class="upload-area" id="dropZone" onclick="document.getElementById('zipInput').click()">
+  <span class="upload-icon">📂</span>
+  <p style="font-weight: 600;">인스타그램 ZIP 파일을 여기에 드래그하세요</p>
+  <p style="font-size: 0.85rem; color: #888; margin-top: 5px;">또는 화면을 클릭하여 파일 선택</p>
+  <div class="upload-btn">파일 업로드</div>
   <input type="file" id="zipInput" accept=".zip" style="display:none" />
-  <button onclick="document.getElementById('zipInput').click()" style="width:100%; padding:15px; background:#222; color:#fff; border:none; border-radius:12px; font-weight:600; cursor:pointer;">인스타그램 ZIP 파일 업로드</button>
-  <p id="fileMeta" style="text-align:center; margin-top:10px; font-size:0.85rem; color:#888;">파일을 선택해 주세요.</p>
 </div>
+
+<p id="fileMeta" style="text-align:center; margin-bottom:20px; font-size:0.85rem; color:#888;"></p>
 
 <div id="resultArea" style="display:none;">
   <div class="card">
@@ -73,29 +93,56 @@
     workout: ["오운완", "헬스타그램", "운동기록", "필라테스", "다이어트"]
   };
 
-  function updateHashtags() {
-    const cat = document.getElementById('tagCategory').value;
-    const tags = tagData[cat];
-    document.getElementById('hashtagDisplay').innerHTML = tags.map(t => `<span class="tag-item">#${t}</span>`).join('');
-  }
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('zipInput');
 
-  document.getElementById('zipInput').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  // 드래그 이벤트 핸들러
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, preventDefaults, false);
+  });
 
-    document.getElementById('fileMeta').textContent = "분석 중...";
+  function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+  });
+
+  // 파일 드롭 시 처리
+  dropZone.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    handleFiles(files[0]);
+  });
+
+  // 클릭 업로드 시 처리
+  fileInput.addEventListener('change', (e) => {
+    handleFiles(e.target.files[0]);
+  });
+
+  async function handleFiles(file) {
+    if (!file || !file.name.endsWith('.zip')) {
+      alert("ZIP 파일만 업로드 가능합니다.");
+      return;
+    }
+
+    document.getElementById('fileMeta').textContent = "📦 " + file.name + " 분석 중...";
     try {
       const zip = await JSZip.loadAsync(file);
       let posts = 0, followers = 0, following = 0;
 
       for (const [path, obj] of Object.entries(zip.files)) {
-        // 파일명 기반 검색 (폴더 경로 무시)
         if (path.endsWith('.json')) {
           const content = await obj.async("text");
           const data = JSON.parse(content);
 
           if (path.includes('posts_1.json')) posts = data.length || 0;
-          if (path.includes('followers_1.json')) followers = data.length || (data.relationships_followers ? data.relationships_followers.length : 0);
+          if (path.includes('followers_1.json')) {
+            followers = data.length || (data.relationships_followers ? data.relationships_followers.length : 0);
+          }
           if (path.includes('following.json')) {
             const fData = data.relationships_following || data;
             following = fData.length || 0;
@@ -111,11 +158,19 @@
         <div class="res-item"><span class="res-lbl">맞팔률</span><span class="res-val">${following > 0 ? Math.round((followers/following)*100) : 0}%</span></div>
       `;
       updateHashtags();
-      document.getElementById('fileMeta').textContent = "분석 완료!";
+      document.getElementById('fileMeta').textContent = "✅ 분석이 완료되었습니다!";
+      // 스크롤 아래로 이동
+      document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
     } catch (err) {
-      document.getElementById('fileMeta').textContent = "에러 발생: " + err.message;
+      document.getElementById('fileMeta').textContent = "❌ 에러 발생: " + err.message;
     }
-  });
+  }
+
+  function updateHashtags() {
+    const cat = document.getElementById('tagCategory').value;
+    const tags = tagData[cat];
+    document.getElementById('hashtagDisplay').innerHTML = tags.map(t => `<span class="tag-item">#${t}</span>`).join('');
+  }
 </script>
 </body>
 </html>
