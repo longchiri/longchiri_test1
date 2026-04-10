@@ -45,37 +45,36 @@
     .summary-item span { font-size: 0.75rem; color: var(--text-sub); font-weight: 700; display: block; margin-bottom: 8px; }
     .summary-item b { font-size: 1.6rem; font-weight: 900; color: #111; }
 
-    /* 저장 및 노출 지수 카드 */
     .save-exposure-card { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); border-radius: 15px; padding: 20px; margin: 20px 0; border: 1px solid #eee; }
     .save-tag { display: inline-block; background: #333; color: #fff; padding: 2px 10px; border-radius: 4px; font-size: 0.7rem; margin-bottom: 10px; font-weight: 800; letter-spacing: 1px;}
     .gauge-container { background: #e9ecef; border-radius: 10px; height: 14px; margin: 12px 0; overflow: hidden; }
     .gauge-fill { background: var(--ig-grad); height: 100%; width: 0%; transition: 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
 
-    /* 신규 시각화 섹션: 골든타임 & 태그 효율 */
     .extra-analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
     @media (max-width: 600px) { .extra-analysis-grid { grid-template-columns: 1fr; } }
     .extra-box { background: #f9fafb; border: 1px solid #eee; border-radius: 15px; padding: 15px; }
     .extra-box h5 { font-size: 0.85rem; font-weight: 800; color: #555; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
     .extra-box .val-text { font-size: 0.9rem; font-weight: 900; color: var(--ig-primary); }
-    .extra-box .sub-info { font-size: 0.7rem; color: #888; margin-top: 5px; }
 
     .deep-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;}
     .stat-box { border: 1px solid #f0f0f0; padding: 15px; border-radius: 12px; background: #fff; }
     .stat-box .label { font-size: 0.75rem; font-weight: 800; color: #888; display: block; margin-bottom: 5px;}
     .stat-box .val { font-size: 1.1rem; font-weight: 900; color: var(--ig-primary); }
 
-    .analysis-report { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 20px; margin-top: 15px; border-left: 5px solid #111; }
-    .analysis-report h3 { font-size: 1rem; font-weight: 900; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-
+    /* 전략 섹션 디자인 (요청하신 사진 피드백 반영) */
+    .section-title { font-size: 1.15rem; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
     .strategy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     @media (max-width: 600px) { .strategy-grid { grid-template-columns: 1fr; } }
+
     .strategy-card { background: #fff; border: 1px solid #eee; border-radius: 20px; padding: 25px; border-left: 6px solid; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
     .strategy-card.keep { border-left-color: var(--ig-success); }
     .strategy-card.fix { border-left-color: var(--ig-warning); }
     .strategy-card.add { border-left-color: var(--ig-primary); }
     .strategy-card.remove { border-left-color: var(--ig-danger); }
-    .strategy-card h4 { font-size: 1rem; margin-bottom: 12px; font-weight: 800; }
-    .strategy-card p { font-size: 0.88rem; color: #444; line-height: 1.6; word-break: keep-all; }
+
+    .strategy-card .type-label { font-size: 1.1rem; font-weight: 900; margin-bottom: 4px; display: block; }
+    .strategy-card .sub-label { font-size: 0.85rem; font-weight: 700; color: #666; display: block; margin-bottom: 12px; }
+    .strategy-card p { font-size: 0.9rem; color: #444; line-height: 1.6; word-break: keep-all; }
 
     .tag-section select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 15px; font-size: 0.95rem; font-weight: 700; background: #fff; }
     .tag-container { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -83,13 +82,12 @@
 
     footer { text-align: center; padding: 50px 0; border-top: 1px dotted #ccc; margin-top: 40px; }
     footer .contact { font-size: 1.1rem; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    footer i { color: #26A5E4; font-size: 1.4rem; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="version-tag">Ver : V27_TB</div>
+  <div class="version-tag">Ver : V28_TB</div>
   
   <header>
     <div class="by-line">by <span class="name">Longchiri</span></div>
@@ -114,31 +112,23 @@
 
   <div id="resultCard" style="display:none;">
     <div class="card">
-      <h2 style="font-size:1.1rem; margin-bottom:15px;"><i class="fa-solid fa-chart-pie"></i> 2026 알고리즘 정밀 진단</h2>
+      <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> 2026 알고리즘 정밀 진단</h2>
       <div class="account-summary">
         <div class="summary-item"><span>게시물</span><b id="valPosts">0</b></div>
         <div class="summary-item"><span>팔로워</span><b id="valFollowers">0</b></div>
-        <div class="summary-item)<span>팔로잉</span><b id="valFollowing">0</b></div>
+        <div class="summary-item"><span>팔로잉</span><b id="valFollowing">0</b></div>
       </div>
 
       <div class="save-exposure-card">
         <span class="save-tag">SAVE & EXPLORE SCORE</span>
         <h4 style="font-size:0.95rem; font-weight:900;">💾 저장 및 노출 잠재력 (추정)</h4>
         <div class="gauge-container"><div id="saveGauge" class="gauge-fill"></div></div>
-        <p id="saveDesc" style="font-size:0.85rem; color:#444; line-height:1.5; font-weight: 500;">분석 엔진 가동 중...</p>
+        <p id="saveDesc" style="font-size:0.85rem; color:#444; line-height:1.5; font-weight: 500;"></p>
       </div>
 
       <div class="extra-analysis-grid">
-        <div class="extra-box">
-          <h5><i class="fa-solid fa-clock"></i> 최적 골든타임</h5>
-          <span class="val-text" id="resGoldenTime">데이터 부족</span>
-          <p class="sub-info">최근 활동 기반 추천 업로드 시간</p>
-        </div>
-        <div class="extra-box">
-          <h5><i class="fa-solid fa-magnifying-glass"></i> 태그 노출 효율</h5>
-          <span class="val-text" id="resTagEfficiency">0%</span>
-          <p class="sub-info">검색 최적화(SEO) 기여도 평가</p>
-        </div>
+        <div class="extra-box"><h5><i class="fa-solid fa-clock"></i> 최적 골든타임</h5><span class="val-text" id="resGoldenTime">-</span></div>
+        <div class="extra-box"><h5><i class="fa-solid fa-magnifying-glass"></i> 태그 노출 효율</h5><span class="val-text" id="resTagEfficiency">0%</span></div>
       </div>
       
       <div class="deep-stats-grid">
@@ -147,25 +137,30 @@
         <div class="stat-box"><span class="label">탐색 노출 확률</span><span class="val" id="resExplore">0%</span></div>
         <div class="stat-box"><span class="label">활동 활성 지수</span><span class="val" id="resActivity">0%</span></div>
       </div>
+    </div>
 
-      <div class="analysis-report">
-        <h3>🔍 2026 AI 종합 진단</h3>
-        <p id="analysisDesc" style="font-size:0.9rem;"></p>
+    <div class="card">
+      <h2 class="section-title"><i class="fa-solid fa-chess-knight"></i> 데이터 맞춤 행동 전략</h2>
+      <div class="strategy-grid">
+        <div class="strategy-card keep"><span class="type-label" style="color:var(--ig-success)">Keep</span><span class="sub-label">유지 및 강화</span><p id="shortKeep"></p></div>
+        <div class="strategy-card fix"><span class="type-label" style="color:var(--ig-warning)">Fix</span><span class="sub-label">수정 및 최적화</span><p id="shortFix"></p></div>
+        <div class="strategy-card add"><span class="type-label" style="color:var(--ig-primary)">Add</span><span class="sub-label">신규 전략 추가</span><p id="shortAdd"></p></div>
+        <div class="strategy-card remove"><span class="type-label" style="color:var(--ig-danger)">Remove</span><span class="sub-label">리스크 제거</span><p id="shortRemove"></p></div>
       </div>
     </div>
 
     <div class="card">
-      <h2 style="font-size:1.1rem; margin-bottom:20px;"><i class="fa-solid fa-chess-rook"></i> 단계별 상세 전략 가이드</h2>
+      <h2 class="section-title"><i class="fa-solid fa-chess-rook"></i> ♟ 단계별 상세 전략 가이드</h2>
       <div class="strategy-grid">
-        <div class="strategy-card keep"><h4>Keep 상세 설명</h4><p id="guideKeep"></p></div>
-        <div class="strategy-card fix"><h4>Fix 상세 설명</h4><p id="guideFix"></p></div>
-        <div class="strategy-card add"><h4>Add 상세 설명</h4><p id="guideAdd"></p></div>
-        <div class="strategy-card remove"><h4>Remove 상세 설명</h4><p id="guideRemove"></p></div>
+        <div class="strategy-card keep"><span class="type-label">Keep 상세 설명</span><p id="longKeep"></p></div>
+        <div class="strategy-card fix"><span class="type-label">Fix 상세 설명</span><p id="longFix"></p></div>
+        <div class="strategy-card add"><span class="type-label">Add 상세 설명</span><p id="longAdd"></p></div>
+        <div class="strategy-card remove"><span class="type-label">Remove 상세 설명</span><p id="longRemove"></p></div>
       </div>
     </div>
 
     <div class="card tag-section">
-      <h2 style="font-size:1.1rem; margin-bottom:15px;"><i class="fa-solid fa-tags"></i> 니치 해시태그 추천 센터</h2>
+      <h2 class="section-title"><i class="fa-solid fa-tags"></i> 니치 해시태그 추천 센터</h2>
       <select id="tagCategory" onchange="updateHashtags()">
         <option value="book">📚 북스타그램 (독서/기록/사유)</option>
         <option value="daily">✨ 일상 기록 (데일리/무드/감성)</option>
@@ -226,52 +221,39 @@
       const fwerL = followers.length;
       const fingL = following.length;
       const totalAct = likes.length + comments.length;
+      const er = fingL > 0 ? (fwerL / fingL).toFixed(2) : fwerL;
+      const fwerNames = new Set(followers.map(f => f.string_list_data?.[0]?.value).filter(Boolean));
+      const nonReciprocal = following.filter(f => !fwerNames.has(f.string_list_data?.[0]?.value)).length;
 
       document.getElementById('valPosts').innerText = pL;
       document.getElementById('valFollowers').innerText = fwerL;
       document.getElementById('valFollowing').innerText = fingL;
-      
-      const er = fingL > 0 ? (fwerL / fingL).toFixed(2) : fwerL;
-      const exploreProb = Math.min(99, (pL * 0.5 + totalAct/10)).toFixed(0);
-      const activityIdx = Math.min(100, (totalAct / (pL || 1) * 5)).toFixed(0);
-      
-      const fwerNames = new Set(followers.map(f => f.string_list_data?.[0]?.value).filter(Boolean));
-      const nonReciprocal = following.filter(f => !fwerNames.has(f.string_list_data?.[0]?.value)).length;
-
       document.getElementById('resER').innerText = er;
-      document.getElementById('resExplore').innerText = exploreProb + "%";
-      document.getElementById('resActivity').innerText = activityIdx + "%";
       document.getElementById('resNonReciprocal').innerText = nonReciprocal + "명";
 
-      // [기능 2 & 3 추가 로직]
-      // 1. 골든타임 추출 (최근 활동 시간 가중치)
+      // 분석 데이터 도출
       const hour = new Date().getHours();
-      let golden;
-      if (hour >= 18 && hour <= 22) golden = "오후 8시 ~ 10시 (황금기)";
-      else golden = "오전 11시 ~ 오후 1시 (집중기)";
+      const golden = (hour >= 18 && hour <= 22) ? "오후 8시 ~ 10시" : "오전 11시 ~ 오후 1시";
       document.getElementById('resGoldenTime').innerText = golden;
+      document.getElementById('resTagEfficiency').innerText = Math.min(95, (er * 10 + 40)).toFixed(0) + "%";
+      document.getElementById('resExplore').innerText = Math.min(99, (pL * 0.5 + 20)).toFixed(0) + "%";
+      document.getElementById('resActivity').innerText = Math.min(100, (totalAct / (pL || 1) * 5)).toFixed(0) + "%";
 
-      // 2. 태그 효율 (콘텐츠 대비 활동 비율로 추정)
-      const tagEff = Math.min(95, (activityIdx * 0.8 + 15)).toFixed(0);
-      document.getElementById('resTagEfficiency').innerText = tagEff + "%";
+      const savePot = Math.min(100, (pL * 0.6 + fwerL/10 + 30)).toFixed(1);
+      document.getElementById('saveGauge').style.width = savePot + "%";
+      document.getElementById('saveDesc').innerText = `내 계정의 저장 및 노출 잠재력은 약 ${savePot}%입니다. 다시 보고 싶은 유익한 정보성 콘텐츠를 강화하세요.`;
 
-      const savePot = Math.min(100, ((pL * 0.6) + (fwerL / 10) + (activityIdx * 0.3))).toFixed(1);
-      const gauge = document.getElementById('saveGauge');
-      gauge.style.width = "0%";
-      setTimeout(() => { gauge.style.width = savePot + "%"; }, 100);
+      // [섹션 1: 간략 전략 - 사진 4, 5 피드백 반영]
+      document.getElementById('shortKeep').innerText = "일관된 테마와 고퀄리티 비주얼 톤앤매너를 유지하세요.";
+      document.getElementById('shortFix').innerText = `영향력 지수 ${er}을 개선하기 위해 고관여 소통 전략이 필요합니다.`;
+      document.getElementById('shortAdd').innerText = `저장 잠재력 ${savePot}% 폭발을 위해 '정보성 릴스'를 주 2회 추가하세요.`;
+      document.getElementById('shortRemove').innerText = `신뢰도 하락 방지를 위해 맞팔하지 않는 ${nonReciprocal}명을 정리하세요.`;
 
-      let sDesc = "";
-      if(savePot > 80) sDesc = "알고리즘이 '저장 가치'가 매우 높은 계정으로 분류하고 있습니다. 현재 테마를 절대 놓치지 마세요.";
-      else if(savePot > 50) sDesc = "평균 이상의 저장력을 보유 중입니다. 공유(Share)를 부르는 릴스 문법을 추가하면 폭발적 성장이 가능합니다.";
-      else sDesc = "콘텐츠의 정보성보다는 소통 비중이 큽니다. 유입을 늘리려면 '다시 보고 싶은 리스트' 테마를 섞어주세요.";
-      document.getElementById('saveDesc').innerText = `내 계정의 저장 및 노출 잠재력은 약 ${savePot}%입니다. ${sDesc}`;
-
-      document.getElementById('analysisDesc').innerText = `현재 ${pL}개의 누적 데이터와 ${totalAct}회의 활동 로그를 기반으로 분석한 결과, 탐색 탭 노출 확률은 ${exploreProb}%입니다. 특히 태그 효율이 ${tagEff}%로 측정되어 검색 유입에 유리한 상태입니다.`;
-
-      document.getElementById('guideKeep').innerText = `현재의 일관된 테마와 고퀄리티 비주얼을 유지하세요. 이것이 알고리즘이 계정을 분류하고 탐색 탭에 노출하는 핵심 자산입니다.`;
-      document.getElementById('guideFix').innerText = `영향력 지수 ${er}을 개선하기 위해 소통이 없는 팔로잉을 정리하고, 릴스 비중을 50% 이상으로 높여 신규 노출 구멍을 뚫어야 합니다.`;
-      document.getElementById('guideAdd').innerText = `저장 잠재력 ${savePot}%를 폭발시키기 위해 '다시 꺼내 볼 정보' 위주의 릴스를 주 2회 추가하세요. 특히 골든타임인 ${golden} 시간을 적극 활용하세요.`;
-      document.getElementById('guideRemove').innerText = `신뢰도 하락을 방지하기 위해 맞팔하지 않는 ${nonReciprocal}명의 유령 팔로잉을 정리하여 계정의 '상호작용 품질'을 높이세요.`;
+      // [섹션 2: 상세 전략 - 사진 6 피드백 반영]
+      document.getElementById('longKeep').innerText = "현재의 일관된 테마와 고퀄리티 비주얼을 유지하세요. 이것이 알고리즘이 계정을 분류하고 탐색 탭에 노출하는 핵심 자산입니다.";
+      document.getElementById('longFix').innerText = `영향력 지수 ${er}을 개선하기 위해 소통이 없는 팔로잉을 정리하고, 릴스 비중을 50% 이상으로 높여 신규 노출 구멍을 뚫어야 합니다.`;
+      document.getElementById('longAdd').innerText = `저장 잠재력 ${savePot}%를 폭발시키기 위해 '다시 꺼내 볼 정보' 위주의 릴스를 주 2회 추가하세요. 특히 텍스트 가독성이 높은 디자인을 권장합니다.`;
+      document.getElementById('longRemove').innerText = `신뢰도 하락을 방지하기 위해 맞팔하지 않는 ${nonReciprocal}명의 유령 팔로잉을 정리하여 계정의 '상호작용 품질'을 높이세요.`;
 
       resultCard.style.display = 'block';
       updateHashtags();
