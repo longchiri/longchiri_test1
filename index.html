@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Insta-Analyzer Pro V44 (Final Restore)</title>
+  <title>Insta-Analyzer Pro V45 (ZIP 오류 해결 및 기능 강화)</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -11,7 +11,7 @@
     :root {
       --ig-primary: #0095f6; --ig-success: #4caf50; --ig-warning: #ff9800; --ig-danger: #ed4956;
       --bg-color: #fafafa; --card-bg: #ffffff; --text-main: #262626; --text-sub: #8e8e8e; --border-color: #dbdbdb;
-      --ig-grad: linear-gradient(135deg, #FFDC80 0%, #F56040 45%, #D62976 70%, #7E3794 100%);
+      --ig-grad: linear-gradient(135deg, #FFDC80 0%, #D62976 50%, #4D3C94 100%);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,13 +29,6 @@
     .upload-zone h2 { font-size: 2.3rem; font-weight: 900; margin: 15px 0; letter-spacing: -1px; text-decoration: underline; text-underline-offset: 10px; }
     .upload-zone p { font-size: 1rem; color: #666; font-weight: 600; margin-top: 15px; }
 
-    .env-guide { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
-    @media (max-width: 768px) { .env-guide { grid-template-columns: 1fr; } }
-    .env-box { background: #fff; border: 1px solid var(--border-color); border-radius: 20px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-    .env-box h4 { font-size: 1rem; font-weight: 900; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .env-text { font-size: 0.82rem; color: #555; line-height: 1.7; word-break: keep-all; }
-    .env-text b { color: var(--ig-primary); font-weight: 800; }
-
     .card { background: #fff; border: 1px solid var(--border-color); border-radius: 25px; padding: 30px; margin-bottom: 25px; }
     .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
     .stat-box { background: #fdfdfd; border: 1px solid #f0f0f0; padding: 20px; border-radius: 20px; text-align: center; }
@@ -50,59 +43,51 @@
     .s-card { background: #fff; border: 1px solid #eee; border-radius: 20px; padding: 25px; border-left: 8px solid; }
     .s-card b { display: block; font-size: 1.2rem; margin-bottom: 10px; }
     .s-card p { font-size: 0.9rem; color: #444; font-weight: 600; }
+    .s-card ul { list-style: none; margin-top: 10px; font-size: 0.8rem; color: #666; }
+    .s-card li { position: relative; padding-left: 15px; margin-bottom: 4px; }
+    .s-card li::before { content: "-"; position: absolute; left: 0; color: #aaa; }
 
-    .detail-item { margin-bottom: 25px; }
-    .detail-item h4 { font-size: 1.1rem; font-weight: 900; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-    .detail-content { font-size: 0.9rem; color: #555; }
-    .detail-content ul { list-style: none; }
-    .detail-content li { position: relative; padding-left: 18px; margin-bottom: 8px; }
-    .detail-content li::before { content: "•"; position: absolute; left: 0; color: #ccc; font-weight: bold; }
+    /* 상세 가이드 카드 디자인 */
+    .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px; }
+    @media (max-width: 600px) { .detail-grid { grid-template-columns: 1fr; } }
+    .d-card { background: #fdfdfd; border: 1px solid #eee; border-radius: 20px; padding: 20px; }
+    .d-card h4 { font-size: 1rem; font-weight: 900; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .d-card ul { list-style: none; }
+    .d-card li { position: relative; padding-left: 18px; font-size: 0.85rem; color: #555; margin-bottom: 6px; }
+    .d-card li::before { content: "•"; position: absolute; left: 0; color: #ccc; font-weight: bold; }
 
-    .btn-save { width: 100%; padding: 20px; border-radius: 50px; border: none; background: #111; color: #fff; font-weight: 900; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
+    /* 해시태그 영역 */
+    .hashtag-box { background: #f9f9f9; padding: 20px; border-radius: 20px; margin-top: 10px; }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .tag { background: #fff; border: 1px solid #ddd; padding: 6px 12px; border-radius: 50px; font-size: 0.8rem; color: #555; font-weight: 700; }
+
     footer { text-align: center; padding: 50px 0; border-top: 1px solid #eee; margin-top: 40px; }
-    .footer-contact { display: flex; justify-content: center; align-items: center; gap: 15px; font-weight: 700; }
+    .btn-save { width: 100%; padding: 20px; border-radius: 50px; border: none; background: #111; color: #fff; font-weight: 900; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
   </style>
 </head>
 <body>
 
 <div class="container" id="pdfArea">
-  <div class="ver-tag">Ver : V44_Final</div>
+  <div class="ver-tag">Ver : V45_Premium</div>
 
   <header>
     <div class="author-top">by Longchiri</div>
-    <h1>Instagram 계정 분석기</h1>
+    <h1>Instagram 계정 분석기 (TB)</h1>
     <p style="color:red; font-weight:800; font-size:0.95rem;">해당 내용은 T/B분석기이므로 정확하지 않을 수 있습니다.</p>
   </header>
 
-  <div id="uploadSection">
-    <div class="env-guide">
-      <div class="env-box">
-        <h4><i class="fa-solid fa-desktop"></i> PC 환경</h4>
-        <div class="env-text">프로필 → 설정 → 내 활동 → <b>정보 다운로드</b> → 형식 <b>JSON</b> → 신청</div>
-      </div>
-      <div class="env-box">
-        <h4><i class="fa-solid fa-robot"></i> Android</h4>
-        <div class="env-text">계정 센터 → 내 정보 및 권한 → <b>내 정보 다운로드</b> → 형식 <b>JSON</b> 설정</div>
-      </div>
-      <div class="env-box">
-        <h4><i class="fa-solid fa-mobile-screen-button"></i> iOS</h4>
-        <div class="env-text">≡ 버튼 → 내 활동 → <b>내 정보 다운로드</b> → <b>JSON</b> 선택 후 다운로드</div>
-      </div>
-    </div>
-
-    <div class="upload-zone" onclick="document.getElementById('fileIn').click()">
-      <i class="fa-solid fa-cloud-arrow-up" style="font-size:4rem; color:#ddd;"></i>
-      <h2>Instagram 데이터 넣기</h2>
-      <p>다운로드한 <b>ZIP 파일</b>을 그대로 업로드하세요.</p>
-      <input type="file" id="fileIn" accept=".zip" style="display:none"/>
-    </div>
+  <div class="upload-zone" onclick="document.getElementById('fileIn').click()">
+    <i class="fa-solid fa-cloud-arrow-up" style="font-size:4rem; color:#ddd;"></i>
+    <h2>Instagram 데이터 넣기</h2>
+    <p>JSON 형식으로 추출된 ZIP 파일을 업로드하세요.</p>
+    <input type="file" id="fileIn" accept=".zip" style="display:none"/>
   </div>
 
   <div id="result" style="display:none">
     <div class="card">
-      <h2 style="font-size:1.4rem; font-weight:900; margin-bottom:20px;" id="userNameTitle">계정 정밀 진단</h2>
+      <h2 style="font-size:1.4rem; font-weight:900; margin-bottom:20px;"><i class="fa-solid fa-magnifying-glass-chart"></i> 알고리즘 정밀 진단</h2>
       <div class="stat-grid">
-        <div class="stat-box"><span>게시물</span><b id="pCount">0</b></div>
+        <div class="stat-box"><span>게시물</span><b id="pCount">0</b><ul id="pDetail"></ul></div>
         <div class="stat-box"><span>팔로워</span><b id="fwerCount">0</b></div>
         <div class="stat-box"><span>팔로잉</span><b id="fingCount">0</b></div>
       </div>
@@ -116,40 +101,50 @@
     <div class="card">
       <h2 style="font-size:1.4rem; font-weight:900; margin-bottom:20px;"><i class="fa-solid fa-bolt"></i> 데이터 맞춤 핵심 전략</h2>
       <div class="strategy-grid">
-        <div class="s-card" style="border-left-color:var(--ig-success);"><b style="color:var(--ig-success)">Keep (고정)</b><p id="sKeep"></p></div>
-        <div class="s-card" style="border-left-color:var(--ig-warning);"><b style="color:var(--ig-warning)">Fix (수정)</b><p id="sFix"></p></div>
-        <div class="s-card" style="border-left-color:var(--ig-primary);"><b style="color:var(--ig-primary)">Add (추가)</b><p id="sAdd"></p></div>
-        <div class="s-card" style="border-left-color:var(--ig-danger);"><b style="color:var(--ig-danger)">Remove (제거)</b><p id="sRemove"></p></div>
+        <div class="s-card" style="border-left-color:var(--ig-success);"><b style="color:var(--ig-success)">Keep (고정)</b><p>브랜드 테마와 고정된 포스팅 주기 유지</p></div>
+        <div class="s-card" style="border-left-color:var(--ig-warning);"><b style="color:var(--ig-warning)">Fix (수정)</b><p>팔로워 대비 낮은 반응률 개선을 위한 소통 전략 수정</p></div>
+        <div class="s-card" style="border-left-color:var(--ig-primary);"><b style="color:var(--ig-primary)">Add (추가)</b><p>저장 잠재력 폭발을 위한 정보성 릴스 주 2회 추가</p></div>
+        <div class="s-card" style="border-left-color:var(--ig-danger);"><b style="color:var(--ig-danger)">Remove (제거)</b><p>신뢰도 하락 방지를 위해 맞팔하지 않는 유령 팔로잉 정리</p></div>
       </div>
     </div>
 
     <div class="card">
-      <h2 style="font-size:1.4rem; font-weight:900; margin-bottom:20px;"><i class="fa-solid fa-lightbulb"></i> 단계별 상세 전략 가이드</h2>
-      <div class="detail-item">
-        <h4 style="color:var(--ig-success)"><i class="fa-solid fa-circle-check"></i> Keep 상세 분석</h4>
-        <div class="detail-content" id="lKeep"></div>
-      </div>
-      <div class="detail-item">
-        <h4 style="color:var(--ig-warning)"><i class="fa-solid fa-circle-exclamation"></i> Fix 상세 분석</h4>
-        <div class="detail-content" id="lFix"></div>
-      </div>
-      <div class="detail-item">
-        <h4 style="color:var(--ig-primary)"><i class="fa-solid fa-circle-plus"></i> Add 상세 분석</h4>
-        <div class="detail-content" id="lAdd"></div>
-      </div>
-      <div class="detail-item">
-        <h4 style="color:var(--ig-danger)"><i class="fa-solid fa-circle-minus"></i> Remove 상세 분석</h4>
-        <div class="detail-content" id="lRemove"></div>
+      <h2 style="font-size:1.4rem; font-weight:900; margin-bottom:10px;"><i class="fa-solid fa-lightbulb"></i> 단계별 상세 전략 가이드</h2>
+      <div class="detail-grid">
+        <div class="d-card">
+          <h4 style="color:var(--ig-success)"><i class="fa-solid fa-check-double"></i> Keep 상세 설명</h4>
+          <ul id="lKeep"></ul>
+        </div>
+        <div class="d-card">
+          <h4 style="color:var(--ig-warning)"><i class="fa-solid fa-wrench"></i> Fix 상세 설명</h4>
+          <ul id="lFix"></ul>
+        </div>
+        <div class="d-card">
+          <h4 style="color:var(--ig-primary)"><i class="fa-solid fa-plus-circle"></i> Add 상세 설명</h4>
+          <ul id="lAdd"></ul>
+        </div>
+        <div class="d-card">
+          <h4 style="color:var(--ig-danger)"><i class="fa-solid fa-trash-can"></i> Remove 상세 설명</h4>
+          <ul id="lRemove"></ul>
+        </div>
       </div>
     </div>
 
-    <button class="btn-save" id="saveBtn" onclick="savePDF()">분석 리포트 PDF 저장</button>
+    <div class="card">
+      <h2 style="font-size:1.4rem; font-weight:900; margin-bottom:15px;"><i class="fa-solid fa-hashtag"></i> 계정 맞춤 니치 해시태그 추천</h2>
+      <div class="hashtag-box">
+        <h4 style="font-size:0.9rem; font-weight:900;">🎯 타겟 유입을 위한 카테고리별 키워드</h4>
+        <div id="hashtagList"></div>
+      </div>
+    </div>
+
+    <button class="btn-save" onclick="savePDF()">분석 리포트 PDF 저장</button>
   </div>
 
   <footer>
     <div style="font-weight: 800; margin-bottom: 10px;">by Longchiri</div>
-    <div class="footer-contact">
-      <span style="color:#0088cc;"><i class="fa-brands fa-telegram"></i> @long_c_hill</span>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; font-weight: 700;">
+      <span style="color:#0088cc;"><i class="fa-brands fa-telegram"></i> 문의 : @long_c_hill</span>
       <span style="color:#e1306c;"><i class="fa-brands fa-instagram"></i> @long_c_hill</span>
     </div>
   </footer>
@@ -165,77 +160,96 @@
       const zip = await JSZip.loadAsync(file);
       let ps = [], fers = [], fing = [], profile = null;
 
-      const filePaths = Object.keys(zip.files);
+      // [핵심 해결 Patch] ZIP 파일 내의 모든 폴더를 재귀적으로 탐색하여 파일을 찾습니다.
+      const files = Object.keys(zip.files);
       
-      for(const path of filePaths) {
+      for(const path of files) {
         if(zip.files[path].dir) continue;
         const lowPath = path.toLowerCase();
         
-        // 1. 게시물 찾기 (여러 폴더 대응)
-        if(lowPath.includes('posts') && lowPath.endsWith('.json')) {
-          const content = JSON.parse(await zip.files[path].async("text"));
-          ps = ps.concat(Array.isArray(content) ? content : (content.items || []));
+        // 1. 게시물 찾기 (여러 폴더 depth 대응)
+        if(lowPath.includes('posts_1.json') || (lowPath.includes('content') && lowPath.includes('posts'))) {
+          const raw = await zip.files[path].async("text");
+          const data = JSON.parse(raw);
+          // 인스타그램 데이터 구조가 배열이거나 특정 객체 안에 담긴 경우 모두 대응
+          if(Array.isArray(data)) ps = ps.concat(data);
+          else if(data.items) ps = ps.concat(data.items);
         }
         // 2. 팔로워 찾기
-        if(lowPath.includes('followers') && lowPath.endsWith('.json')) {
-          const content = JSON.parse(await zip.files[path].async("text"));
-          fers = content.relationships_followers || (Array.isArray(content) ? content : []);
+        if(lowPath.includes('followers_1.json') || (lowPath.includes('relationships') && lowPath.includes('followers'))) {
+          const raw = await zip.files[path].async("text");
+          const data = JSON.parse(raw);
+          fers = data.relationships_followers || (Array.isArray(data) ? data : []);
         }
         // 3. 팔로잉 찾기
-        if(lowPath.includes('following') && lowPath.endsWith('.json')) {
-          const content = JSON.parse(await zip.files[path].async("text"));
-          fing = content.relationships_following || (Array.isArray(content) ? content : []);
+        if(lowPath.includes('following.json') || (lowPath.includes('relationships') && lowPath.includes('following'))) {
+          const raw = await zip.files[path].async("text");
+          const data = JSON.parse(raw);
+          fing = data.relationships_following || (Array.isArray(data) ? data : []);
         }
-        // 4. 프로필 정보
-        if(lowPath.includes('personal_information') && lowPath.endsWith('.json')) {
-          profile = JSON.parse(await zip.files[path].async("text"));
+        // 4. 프로필 정보 (해시태그 파밍용 카테고리 추출)
+        if(lowPath.includes('personal_information.json')) {
+          const raw = await zip.files[path].async("text");
+          profile = JSON.parse(raw);
         }
       }
 
-      if(ps.length === 0 && fers.length === 0) throw new Error("Data missing");
+      // 데이터가 하나도 안 찾아졌을 때의 안전장치
+      if(ps.length === 0 && fers.length === 0) {
+        throw new Error("Missing Data");
+      }
 
-      let uid = "User";
-      try { uid = profile.profile_user[0].string_list_data[0].value; } catch(e) {}
+      const pL = ps.length || 0;
+      const fwerL = fers.length || 0;
+      const fingL = fing.length || 0;
+      const score = Math.min(99, (pL*0.48 + fwerL/9 + 40)).toFixed(1);
 
-      const pL = ps.length, fwerL = fers.length, fingL = fing.length;
-      const score = Math.min(99, (pL*0.42 + fwerL/10 + 40)).toFixed(1);
+      // 계정 카테고리 추론 및 니치 해시태그 설정
+      let category = "라이프스타일";
+      try {
+        if(profile && profile.profile_user) {
+          category = profile.profile_user[0].string_list_data[0].value || "라이프스타일";
+        }
+      } catch(e) {}
+
+      const tagMap = {
+        "맛집/카페": ["지역맛집", "분위기좋은카페", "푸드스타일링", "오늘뭐먹지", "카페투어", "맛집탐방", "지역명+맛집"],
+        "여행": ["여행에미치다", "국내여행지추천", "감성숙소", "여행일기", "체크인완료", "지역명+여행", "힐링여행"],
+        "뷰티/패션": ["데일리룩", "오오티디", "코덕후", "메이크업튜토리얼", "패션코디", "착장정보", "스타일링"],
+        "IT/가전": ["테크리뷰", "가젯트", "얼리어답터", "애플빠", "갤럭시유저", "IT트렌드", "신제품리뷰"],
+        "라이프스타일": ["감성사진", "집꾸미기", "데일리레코드", "주말나들이", "소확행", "소비생활", "취미생활"]
+      };
+      const recommendedTags = tagMap[category] || tagMap["라이프스타일"];
 
       // UI 업데이트
-      document.getElementById('userNameTitle').innerHTML = `<i class="fa-solid fa-chart-line"></i> @${uid} 계정 정밀 진단`;
       document.getElementById('pCount').innerText = pL;
       document.getElementById('fwerCount').innerText = fwerL;
       document.getElementById('fingCount').innerText = fingL;
       document.getElementById('gBar').style.width = score + "%";
-      document.getElementById('gText').innerText = `@${uid} 님의 분석 결과, 노출 잠재력은 ${score}% 입니다.`;
+      document.getElementById('gText').innerText = `노출 잠재력은 약 ${score}% 수준입니다.`;
 
-      // 핵심 전략 텍스트
-      document.getElementById('sKeep').innerText = "브랜드 테마와 고정된 포스팅 주기 유지";
-      document.getElementById('sFix').innerText = "팔로워 대비 낮은 반응률 개선을 위한 소통 전략 수정";
-      document.getElementById('sAdd').innerText = "저장 잠재력 폭발을 위한 정보성 릴스 주 2회 추가";
-      document.getElementById('sRemove').innerText = "신뢰도 하락 방지를 위해 맞팔하지 않는 유령 팔로잉 정리";
+      // 상세 가이드 업데이트 (가독성 높은 리스트 형태)
+      document.getElementById('lKeep').innerHTML = `<li>누적된 ${pL}개의 콘텐츠 데이터를 흔들림 없이 고정하세요.</li><li>시각적 톤앤매너는 탐색 탭 전환율의 핵심입니다.</li>`;
+      document.getElementById('lFix').innerHTML = `<ul><li>현재의 댓글 답변 및 스토리 인터랙션 방식을 수정해야 합니다.</li><li>일반 포스트 대비 릴스 도달률이 높으므로 <b>50% 이상 릴스로 편성</b>하세요.</li></ul>`;
+      document.getElementById('lAdd').innerHTML = `<ul><li>분석 결과 저장 잠재력이 높습니다. 꿀팁형 카드뉴스를 추가하세요.</li><li>해시태그는 추천된 '니치 키워드'를 7개 내외로 사용하십시오.</li></ul>`;
+      document.getElementById('lRemove').innerHTML = `<ul><li>계정 신뢰도(Trust Score) 향상을 위해 맞팔하지 않는 계정을 정리하세요.</li><li>상호작용 밀도를 높여야 알고리즘의 도달 푸시를 받습니다.</li></ul>`;
 
-      // 상세 가이드 리스트 복구
-      document.getElementById('lKeep').innerHTML = `<ul><li>누적된 ${pL}개의 포스트는 계정의 정체성을 증명하는 핵심입니다.</li><li>일관된 비주얼 톤앤매너를 유지하여 탐색 탭 노출 시 클릭률을 높이세요.</li></ul>`;
-      document.getElementById('lFix').innerHTML = `<ul><li>게시물 수 대비 인터랙션이 부족합니다. 댓글 답변 및 스토리 소통을 늘리세요.</li><li>발행물의 50% 이상을 릴스로 전환하여 알고리즘의 도달 범위를 넓혀야 합니다.</li></ul>`;
-      document.getElementById('lAdd').innerHTML = `<ul><li>유저들이 나중에 다시 꺼내 볼 만한 '꿀팁' 카드뉴스를 추가하세요.</li><li>가독성 높은 텍스트 레이아웃을 활용한 릴스가 저장 지수를 획기적으로 높여줍니다.</li></ul>`;
-      document.getElementById('lRemove').innerHTML = `<ul><li>의미 없는 대량 팔로잉은 계정 지수를 낮춥니다. 약 ${Math.floor(fingL*0.2)}명을 정리하세요.</li><li>상호작용 밀도를 높이면 알고리즘이 계정을 더 건강한 소통 채널로 인식합니다.</li></ul>`;
+      // 해시태그 업데이트
+      let tagHtml = "";
+      recommendedTags.forEach(tag => tagHtml += `<span class="tag">#${tag}</span>`);
+      document.getElementById('hashtagList').innerHTML = `<div class="tag-cloud">${tagHtml}</div>`;
 
-      document.getElementById('uploadSection').style.display = 'none';
       document.getElementById('result').style.display = 'block';
-      window.scrollTo(0,0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
     } catch(err) {
-      alert("ZIP 분석 중 오류가 발생했습니다. 'JSON' 형식으로 다운로드된 파일인지 확인해주세요.");
+      alert("ZIP 분석 중 오류가 발생했습니다. 인스타그램 설정에서 'JSON' 형식으로 정확히 다운로드된 데이터인지 다시 확인해 주세요.");
     }
   };
 
   function savePDF() {
     const element = document.getElementById('pdfArea');
-    const btn = document.getElementById('saveBtn');
-    btn.style.display = 'none';
-    html2pdf().from(element).set({
-      margin: 10, filename: 'Insta_Analysis_Report.pdf',
-      html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).save().then(() => btn.style.display = 'block');
+    html2pdf().from(element).set({ margin: 10, jsPDF: { format: 'a4' } }).save('Insta_Premium_Report.pdf');
   }
 </script>
 </body>
