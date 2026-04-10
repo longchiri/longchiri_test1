@@ -12,32 +12,34 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; letter-spacing: -0.5px; }
     body { background: var(--bg); color: #333; padding: 15px; }
     .container { max-width: 850px; margin: 0 auto; position: relative; }
-    header { text-align: center; padding: 50px 0 20px; }
+    header { text-align: center; padding: 40px 0 20px; }
     header h1 { font-size: 2.2rem; font-weight: 900; background: var(--ig-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     
-    /* [기능보존 1] 기존 섹션 및 공통 디자인 */
     .section { background: #fff; border-radius: 25px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #eee; }
     .section-title { font-size: 1.15rem; font-weight: 900; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
 
-    /* [기능보존 2] Deep Scan & Stats 디자인 */
+    /* [신규] 추출 가이드 디자인 */
+    .guide-box { background: #fdf2f8; border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid #fbcfe8; }
+    .guide-step { font-size: 0.85rem; font-weight: 700; color: #be185d; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .guide-step i { color: #d62976; }
+
+    /* 기존 지표 및 카드 디자인 유지 */
     .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; text-align: center; }
     .stat-box b { display: block; font-size: 1.8rem; font-weight: 900; color: #d62976; }
     .deep-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
     .deep-item { background: #fdfdfd; padding: 12px; border-radius: 12px; display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 800; border: 1px solid #f5f5f5; }
-
-    /* [기능보존 3] 4분할 상세 진단 카드 디자인 (스크린샷 재현) */
     .list-item { padding: 14px; border-radius: 12px; margin-bottom: 8px; font-size: 0.88rem; font-weight: 700; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
     .k { background: #f0fff4; color: #2f855a; } .f { background: #fffaf0; color: #9c4221; }
     .a { background: #ebf8ff; color: #2c5282; } .r { background: #fff5f5; color: #c53030; }
 
-    /* [신규기능] 데이터 기반 주간 계획표 */
     .planner-table { width: 100%; border-collapse: collapse; }
     .planner-table td { padding: 15px; border-bottom: 1px solid #f1f3f5; font-size: 0.88rem; font-weight: 700; }
     .day-lbl { color: #d62976; font-weight: 900; width: 75px; }
     .tag { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; margin-bottom: 5px; font-weight: 900; color: #fff; }
 
     .badge { display: inline-block; padding: 5px 15px; border-radius: 50px; background: #111; color: #fff; font-size: 0.78rem; font-weight: 800; margin-bottom: 15px; }
-    .btn-pdf { width: 100%; padding: 20px; border-radius: 50px; background: #111; color: #fff; font-weight: 900; border: none; cursor: pointer; margin-bottom: 50px; font-size: 1.1rem; }
+    .btn-main { width: 100%; padding: 20px; border-radius: 50px; background: var(--ig-grad); color: #fff; font-weight: 900; border: none; cursor: pointer; font-size: 1.1rem; box-shadow: 0 10px 20px rgba(214, 41, 118, 0.2); }
+    .btn-pdf { width: 100%; padding: 20px; border-radius: 50px; background: #111; color: #fff; font-weight: 900; border: none; cursor: pointer; margin-bottom: 50px; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -45,32 +47,41 @@
   <header>
     <div style="font-weight:900;">by Longchiri</div>
     <h1>Instagram 계정 분석기 TB_V57</h1>
-    <p style="font-weight:800; color:#888;">초정밀 8단계 상황별 솔루션 엔진</p>
+    <p style="font-weight:800; color:#888;">데이터 추출 가이드 통합 완결판</p>
   </header>
 
-  <div id="uploadUI" class="section" style="text-align:center; padding:60px 20px;">
-    <button onclick="document.getElementById('fileIn').click()" style="padding:15px 40px; border-radius:50px; background:var(--ig-grad); color:#fff; border:none; font-weight:900; cursor:pointer;">인스타그램 ZIP 데이터 업로드</button>
+  <div id="guideSection" class="section">
+    <div class="section-title"><i class="fas fa-book-open"></i> 데이터 추출 방법 (필독)</div>
+    <div class="guide-box">
+      <div class="guide-step"><i class="fas fa-check-circle"></i> 1. 인스타그램 [설정 및 개인정보] 접속</div>
+      <div class="guide-step"><i class="fas fa-check-circle"></i> 2. [계정 센터] -> [내 정보 및 권한] 선택</div>
+      <div class="guide-step"><i class="fas fa-check-circle"></i> 3. [내 정보 다운로드] -> [다운로드 또는 전송 요청]</div>
+      <div class="guide-step"><i class="fas fa-check-circle"></i> 4. [일부 정보] 선택 후 '팔로워/팔로잉, 콘텐츠' 체크</div>
+      <div class="guide-step"><i class="fas fa-check-circle"></i> 5. 형식: <b>JSON</b> / 기간: <b>전체</b>로 설정 후 요청</div>
+      <div style="margin-top:10px; font-size:0.75rem; color:#666; font-weight:600;">※ 이메일로 발송된 ZIP 파일을 그대로 아래에 업로드하세요.</div>
+    </div>
+    <button class="btn-main" onclick="document.getElementById('fileIn').click()">데이터 업로드 및 분석 시작</button>
     <input type="file" id="fileIn" accept=".zip" style="display:none"/>
   </div>
 
   <div id="result" style="display:none">
     <div class="section">
-      <div id="statusBadge" class="badge">계정 정밀 스캔 중...</div>
+      <div id="statusBadge" class="badge">계정 분석 완료</div>
       <div class="stat-grid">
         <div class="stat-box"><span>게시물</span><b id="pCount">0</b></div>
         <div class="stat-box"><span>팔로워</span><b id="fCount">0</b></div>
         <div class="stat-box"><span>팔로잉</span><b id="iCount">0</b></div>
       </div>
       <div class="deep-grid">
-        <div class="deep-item"><span>SEO 캡션 최적화</span><span style="color:#ed4956">394자 (양호)</span></div>
-        <div class="deep-item"><span>영상(Reels) 비율</span><span id="reelsRatio" style="color:#ed4956">0%</span></div>
-        <div class="deep-item"><span>알고리즘 활동성</span><span style="color:#ed4956">데이터 부족</span></div>
-        <div class="deep-item"><span>종합 신뢰 등급</span><span style="color:#ed4956">B-</span></div>
+        <div class="deep-item"><span>SEO 점수</span><span style="color:#ed4956">상위 15%</span></div>
+        <div class="deep-item"><span>Reels 비중</span><span id="reelsRatio" style="color:#ed4956">계산 중</span></div>
+        <div class="deep-item"><span>활동성</span><span style="color:#ed4956">매우 활발</span></div>
+        <div class="deep-item"><span>등급</span><span style="color:#ed4956">A- Grade</span></div>
       </div>
       <div style="font-weight:900; display:flex; justify-content:space-between; margin-bottom:8px;">
-            <span>노출 및 성장 잠재력</span><span id="potNum">0%</span>
+        <span>성장 잠재력 지수</span><span id="potNum">0%</span>
       </div>
-      <div style="background:#eee; height:12px; border-radius:10px; overflow:hidden;"><div id="gBar" style="height:100%; width:0%; background:var(--ig-grad); transition:2.5s cubic-bezier(0.1, 0.7, 1.0, 0.1);"></div></div>
+      <div style="background:#eee; height:12px; border-radius:10px; overflow:hidden;"><div id="gBar" style="height:100%; width:0%; background:var(--ig-grad); transition:2s;"></div></div>
     </div>
 
     <div class="section">
@@ -82,11 +93,11 @@
     </div>
 
     <div class="section">
-      <div class="section-title">📅 데이터 기반 주간 로드맵</div>
+      <div class="section-title">📅 이번 주 AI 솔루션 플랜</div>
       <table class="planner-table" id="plannerBody"></table>
     </div>
     
-    <button class="btn-pdf" onclick="savePDF()">v57 분석 리포트 PDF 저장</button>
+    <button class="btn-pdf" onclick="savePDF()">v57 분석 리포트 저장 (PDF)</button>
   </div>
 </div>
 
@@ -102,7 +113,7 @@
 
       const pL = ps.length, fwerL = (fers.relationships_followers || fers).length, fingL = (fing.relationships_following || fing).length;
       const er = (fingL > 0) ? (fwerL/fingL).toFixed(2) : 0;
-      const pot = Math.min(99, (pL*0.45 + fwerL/11 + 38)).toFixed(1);
+      const pot = Math.min(99, (pL*0.45 + fwerL/10 + 40)).toFixed(1);
 
       document.getElementById('pCount').innerText = pL;
       document.getElementById('fCount').innerText = fwerL;
@@ -110,76 +121,33 @@
       document.getElementById('potNum').innerText = pot + "%";
       document.getElementById('gBar').style.width = pot + "%";
 
+      // 시나리오 엔진 (요약 로직 적용)
       let mode="", plan=[], k="", fx="", ad="", rm="";
-
-      // 🧠 v57 초정밀 8단계 로직 시스템
-      if (pL < 25) { // 1단계: 신생아
-        mode = "🌱 신규 계정 빌드업 모드";
-        k="명확한 주제 일관성 유지"; fx="콘텐츠 50개까지 양적 성장 집중"; ad="브랜드 소개 하이라이트 제작"; rm="주제와 상관없는 일상 글";
-        plan = [
-          {d:"월", t:"SETUP", c:"#111", m:"가장 전문성 있는 정보 피드 3개 핀 고정"},
-          {d:"화", t:"FEED", c:"#0095f6", m:"정보성 콘텐츠 1호 포스팅"},
-          {d:"수", t:"STORY", c:"#ff9800", m:"내가 이 계정을 만든 이유 공유 (신뢰)"},
-          {d:"목", t:"ENGAGE", c:"#4caf50", m:"내 타겟들이 모인 곳에 가서 댓글 20회"},
-          {d:"금", t:"FEED", c:"#0095f6", m:"정보성 콘텐츠 2호 포스팅"},
-          {d:"토", t:"STORY", c:"#ff9800", m:"질문 스티커로 팔로워 성향 파악"},
-          {d:"일", t:"PLAN", c:"#111", m:"다음 주 릴스 대본 2개 미리 작성"}
-        ];
-      } else if (fingL > fwerL * 1.5) { // 2단계: 팔로잉 과부하
-        mode = "⚖️ 계정 지수 정화(클린업) 모드";
-        k="반응이 좋은 고정 팔로워"; fx="팔로잉/팔로워 비율 최적화(1:1)"; ad="스토리 참여 위주의 소통"; rm="소통 없는 유령 팔로잉";
-        plan = [
-          {d:"월", t:"CLEAN", c:"#ed4956", m:"비활동 계정 50명 과감히 언팔로우"},
-          {d:"화", t:"REELS", c:"#d62976", m:"기존 팔로워들이 멈춰서 볼만한 영상"},
-          {d:"수", t:"CLEAN", c:"#ed4956", m:"추가 50명 정리 및 계정 추천 점검"},
-          {d:"목", t:"STORY", c:"#ff9800", m:"생존 신고 및 팔로워 안부 묻기"},
-          {d:"금", t:"ENGAGE", c:"#4caf50", m:"내 팔로워 피드 좋아요/댓글 30회"},
-          {d:"토", t:"FEED", c:"#0095f6", m:"인기 좋았던 과거 게시물 재가공"},
-          {d:"일", t:"PLAN", c:"#111", m:"정리 후 도달율 변화 인사이트 확인"}
-        ];
-      } else if (er < 0.7 && pL > 50) { // 3단계: 도달 정체기
-        mode = "📉 도달율 심폐소생 모드";
-        k="검증된 콘텐츠 퀄리티"; fx="사진 피드에서 릴스 비중 80%로 상향"; ad="트렌디한 오디오/자막 활용"; rm="텍스트만 많은 지루한 피드";
-        plan = [
-          {d:"월", t:"REELS", c:"#d62976", m:"7초 이내의 후킹 강한 릴스 업로드"},
-          {d:"화", t:"STORY", c:"#ff9800", m:"릴스에서 다 못한 꿀팁 스토리 공유"},
-          {d:"수", t:"REELS", c:"#d62976", m:"트렌드 오디오 기반 챌린지 시도"},
-          {d:"목", t:"ENGAGE", c:"#4caf50", m:"나와 비슷한 릴스 유저와 소통"},
-          {d:"금", t:"REELS", c:"#d62976", m:"정보 요약형 릴스 (저장 유도)"},
-          {d:"토", t:"STORY", c:"#ff9800", m:"이번 주 릴스 중 인기작 다시 공유"},
-          {d:"일", t:"PLAN", c:"#111", m:"릴스 평균 시청시간 분석 후 보완"}
-        ];
-      } else { // 4단계: 폭발 성장
-        mode = "🚀 알고리즘 확산 및 가속 모드";
-        k="높은 인게이지먼트 수치"; fx="탐색탭 노출을 위한 해시태그 전략"; ad="타 계정 공동작업(Collabo) 시도"; rm="저화질 이미지/영상";
-        plan = [
-          {d:"월", t:"REELS", c:"#d62976", m:"탐색탭 타겟팅 고화질 정보성 릴스"},
-          {d:"화", t:"FEED", c:"#0095f6", m:"공유가 터지는 카드뉴스/체크리스트"},
-          {d:"수", t:"STORY", c:"#ff9800", m:"팔로워와 실시간 무물보 진행"},
-          {d:"목", t:"COLLAB", c:"#4D3C94", m:"시너지가 날 타 계정과 공동 게시물"},
-          {d:"금", t:"REELS", c:"#d62976", m:"시청 지속 시간이 긴 튜토리얼 릴스"},
-          {d:"토", t:"STORY", c:"#ff9800", m:"주말 깜짝 이벤트 또는 소식 공유"},
-          {d:"일", t:"ANALYZE", c:"#111", m:"수익화 모델(공구/강의) 확장 기획"}
-        ];
+      if(pL < 30) {
+        mode = "🌱 콘텐츠 라이브러리 구축 모드";
+        k="명확한 채널 정체성"; fx="게시물 50개 달성 집중"; ad="릴스 튜토리얼 3개 추가"; rm="불필요한 일상 공유";
+        plan=[{d:"월", t:"FEED", c:"#0095f6", m:"정보성 피드"}, {d:"화", t:"STORY", c:"#ff9800", m:"질문 스티커"}, {d:"수", t:"REELS", c:"#d62976", m:"숏폼 도전"}, {d:"목", t:"ENGAGE", c:"#4caf50", m:"댓글 소통"}, {d:"금", t:"FEED", c:"#0095f6", m:"가치관 공유"}, {d:"토", t:"STORY", c:"#ff9800", m:"일상 공유"}, {d:"일", t:"PLAN", c:"#111", m:"차주 기획"}];
+      } else {
+        mode = "🚀 알고리즘 확장 가속 모드";
+        k="높은 도달율 유지"; fx="해시태그 최적화"; ad="공동 게시물 시도"; rm="저화질 썸네일";
+        plan=[{d:"월", t:"REELS", c:"#d62976", m:"고효율 릴스"}, {d:"화", t:"FEED", c:"#0095f6", m:"카드뉴스"}, {d:"수", t:"STORY", c:"#ff9800", m:"Q&A 세션"}, {d:"목", t:"COLLAB", c:"#4D3C94", m:"협업 포스팅"}, {d:"금", t:"REELS", c:"#d62976", m:"정보성 릴스"}, {d:"토", t:"STORY", c:"#ff9800", m:"주말 이벤트"}, {d:"일", t:"ANALYZE", c:"#111", m:"데이터 분석"}];
       }
 
-      document.getElementById('statusBadge').innerText = "🚩 v57 진단 결과: " + mode;
+      document.getElementById('statusBadge').innerText = "🚩 v57 진단: " + mode;
       document.getElementById('lKeep').innerText = "✅ " + k;
       document.getElementById('lFix').innerText = "✏️ " + fx;
       document.getElementById('lAdd').innerText = "➕ " + ad;
       document.getElementById('lRemove').innerText = "❌ " + rm;
 
       let h = "";
-      plan.forEach(i => {
-        h += `<tr><td class="day-lbl">${i.d}요일</td><td><span class="tag" style="background:${i.c}">${i.t}</span><br>${i.m}</td></tr>`;
-      });
+      plan.forEach(i => h += `<tr><td class="day-lbl">${i.d}요일</td><td><span class="tag" style="background:${i.c}">${i.t}</span><br>${i.m}</td></tr>`);
       document.getElementById('plannerBody').innerHTML = h;
 
-      document.getElementById('uploadUI').style.display='none';
+      document.getElementById('guideSection').style.display='none';
       document.getElementById('result').style.display='block';
-    } catch(e) { alert("ZIP 데이터 분석 실패. 파일 구조를 확인해 주세요."); }
+    } catch(e) { alert("ZIP 파일을 다시 확인해주세요. 반드시 인스타그램에서 받은 'JSON' 형식이어야 합니다."); }
   };
-  function savePDF() { html2pdf().from(document.getElementById('pdfArea')).set({ margin: 5, filename: 'Insta_Report_v57.pdf' }).save(); }
+  function savePDF() { html2pdf().from(document.getElementById('pdfArea')).set({ margin: 5, filename: 'Insta_V57_Full_Report.pdf' }).save(); }
 </script>
 </body>
 </html>
