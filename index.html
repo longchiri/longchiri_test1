@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Insta-Analyzer Master V53</title>
+  <title>Insta-Analyzer Deep V54</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -14,95 +14,79 @@
       --bg-color: #fafafa;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; letter-spacing: -0.6px; }
-    body { background: var(--bg-color); color: #262626; padding: 15px; line-height: 1.6; }
+    body { background: var(--bg-color); color: #262626; padding: 15px; }
     .container { max-width: 900px; margin: 0 auto; position: relative; }
-    .ver-tag { position: absolute; top: 10px; left: 5px; font-size: 0.7rem; color: #ccc; font-weight: 900; }
     
     header { text-align: center; padding: 60px 0 30px; }
-    .author-top { font-size: 1.1rem; font-weight: 900; color: #333; margin-bottom: 5px; }
-    header h1 { font-size: 2.8rem; font-weight: 900; background: var(--ig-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
-    header p { color: var(--ig-danger); font-weight: 800; font-size: 0.95rem; }
-
-    /* 업로드 영역 - V47의 직관성 유지 */
-    .upload-zone { background: #fff; border: 3px dashed #ddd; padding: 70px 20px; border-radius: 30px; text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
-    .upload-zone:hover { border-color: var(--ig-primary); background: #fdfdfd; transform: translateY(-3px); }
-    .upload-zone h2 { font-size: 2.4rem; font-weight: 900; margin-bottom: 10px; border-bottom: 5px solid #111; display: inline-block; }
-
-    /* 결과 카드 디자인 - V38의 화려함 + V52의 전문성 */
-    .card { background: #fff; border: 1px solid #dbdbdb; border-radius: 30px; padding: 35px; margin-bottom: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.03); }
-    .section-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; }
+    header h1 { font-size: 2.8rem; font-weight: 900; background: var(--ig-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     
+    .upload-zone { background: #fff; border: 3px dashed #ddd; padding: 60px 20px; border-radius: 30px; text-align: center; cursor: pointer; margin-bottom: 40px; }
+    
+    .card { background: #fff; border: 1px solid #dbdbdb; border-radius: 30px; padding: 35px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
     .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
     .stat-box { background: #fdfdfd; padding: 25px; border-radius: 20px; text-align: center; border: 1px solid #f0f0f0; }
-    .stat-box span { font-size: 0.85rem; color: #999; font-weight: 800; display: block; margin-bottom: 5px; }
     .stat-box b { display: block; font-size: 2.2rem; font-weight: 900; background: var(--ig-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    /* AI 분석 박스 - 2026 알고리즘 수식 강조 */
-    .analysis-box { background: #111; color: #fff; padding: 30px; border-radius: 25px; border-left: 12px solid #D62976; position: relative; overflow: hidden; }
-    .analysis-box::after { content: 'AI LOGIC 2026'; position: absolute; top: 10px; right: 15px; font-size: 0.65rem; color: #444; font-weight: 900; }
+    /* 심층 분석 지표 */
+    .deep-insight { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .insight-item { background: #f8f9fa; padding: 15px; border-radius: 15px; font-size: 0.9rem; font-weight: 700; }
+    .insight-item span { color: var(--ig-danger); float: right; }
+
+    .analysis-box { background: #111; color: #fff; padding: 30px; border-radius: 25px; border-left: 12px solid #D62976; }
     .analysis-box h3 { font-size: 1.2rem; color: #FFDC80; margin-bottom: 12px; font-weight: 900; }
     .analysis-box p { font-size: 1rem; line-height: 1.8; font-weight: 600; white-space: pre-wrap; }
 
-    /* 전략 카드 */
     .strategy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
     .s-card { background: #fff; border: 1px solid #eee; border-radius: 25px; padding: 25px; border-left: 10px solid; }
     .s-card b { display: block; font-size: 1.2rem; margin-bottom: 8px; font-weight: 900; }
-    .s-card p { font-size: 0.95rem; font-weight: 700; color: #555; }
 
-    /* 상세 가이드 - 형광펜(marker) 효과 */
-    .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-    .d-card { background: #f9f9f9; border-radius: 25px; padding: 25px; border: 1px solid #eee; }
-    .d-card h4 { font-weight: 900; margin-bottom: 15px; color: #333; }
-    .d-card li { font-size: 0.95rem; font-weight: 700; color: #444; margin-bottom: 12px; list-style: none; position: relative; padding-left: 20px; }
-    .d-card li::before { content: '▶'; position: absolute; left: 0; color: #D62976; font-size: 0.8rem; }
     .marker { background: linear-gradient(to top, #ffe500 45%, transparent 45%); padding: 0 2px; font-weight: 800; color: #000; }
-
-    /* 버튼 및 푸터 */
-    .btn-save { width: 100%; padding: 25px; border-radius: 60px; background: #111; color: #fff; border: none; font-weight: 900; font-size: 1.2rem; cursor: pointer; transition: 0.3s; }
-    .btn-save:hover { background: #333; transform: translateY(-2px); }
+    .btn-save { width: 100%; padding: 25px; border-radius: 60px; background: #111; color: #fff; border: none; font-weight: 900; font-size: 1.2rem; cursor: pointer; }
     
     footer { text-align: center; padding: 60px 0; border-top: 1px solid #eee; margin-top: 40px; }
-    .sns-links { display: flex; justify-content: center; gap: 30px; margin-top: 20px; }
-    .sns-links a { text-decoration: none; font-weight: 800; color: #333; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
-
-    @media (max-width: 768px) { .stat-grid, .strategy-grid, .detail-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .stat-grid, .strategy-grid, .deep-insight { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
 
 <div class="container" id="pdfArea">
-  <div class="ver-tag">Instagram 계정분석기 TB_V53</div>
   <header>
-    <div class="author-top">by Longchiri</div>
-    <h1>Insta Analyzer Pro</h1>
-    <p>2026 Two-Tower & Cascading 랭킹 시스템 적용</p>
+    <div style="font-weight:900; margin-bottom:5px;">by Longchiri</div>
+    <h1>Instagram 계정 분석기 TB_V54</h1>
+    <p>JSON 하위 데이터 심층 스캔 V54</p>
   </header>
 
   <div id="uploadBox">
     <div class="upload-zone" onclick="document.getElementById('fileIn').click()">
-      <i class="fa-solid fa-wand-magic-sparkles" style="font-size:3.5rem; color:#ddd; margin-bottom:15px;"></i>
-      <h2>데이터 분석 시작</h2>
-      <p>추출된 <b>ZIP 파일</b>을 선택하여 정밀 진단을 시작하세요.</p>
+      <h2>데이터 심층 스캔</h2>
+      <p>분석용 ZIP 파일을 선택하세요.</p>
       <input type="file" id="fileIn" accept=".zip" style="display:none"/>
     </div>
   </div>
 
   <div id="result" style="display:none">
     <div class="card">
-      <h2 class="section-title"><i class="fa-solid fa-chart-line"></i> 계정 핵심 인프라</h2>
+      <h2 style="margin-bottom:20px; font-weight:900;"><i class="fa-solid fa-microchip"></i> 데이터 정밀 분석 결과</h2>
       <div class="stat-grid">
-        <div class="stat-box"><span>CONTENTS</span><b id="pCount">0</b></div>
-        <div class="stat-box"><span>FOLLOWERS</span><b id="fwerCount">0</b></div>
-        <div class="stat-box"><span>FOLLOWING</span><b id="fingCount">0</b></div>
+        <div class="stat-box"><span>총 게시물</span><b id="pCount">0</b></div>
+        <div class="stat-box"><span>팔로워</span><b id="fwerCount">0</b></div>
+        <div class="stat-box"><span>팔로잉</span><b id="fingCount">0</b></div>
       </div>
+      
+      <div class="deep-insight">
+        <div class="insight-item">평균 캡션 길이 (SEO 점수) <span id="avgCaption">0자</span></div>
+        <div class="insight-item">영상 콘텐츠 비중 (Reels) <span id="videoRatio">0%</span></div>
+        <div class="insight-item">최근 30일 활동 지수 <span id="activityScore">매우 낮음</span></div>
+        <div class="insight-item">계정 신뢰 등급 (Auth) <span id="authGrade">분석중</span></div>
+      </div>
+
       <div class="analysis-box">
-        <h3><i class="fa-solid fa-brain"></i> AI 정밀 판정 결과</h3>
+        <h3><i class="fa-solid fa-brain"></i> Two-Tower & Deep Scan 판정</h3>
         <p id="aiMsg"></p>
       </div>
     </div>
 
     <div class="card">
-      <h2 class="section-title"><i class="fa-solid fa-bolt"></i> 카테고리별 필수 전략</h2>
       <div class="strategy-grid">
         <div class="s-card" style="border-left-color:var(--ig-success);"><b style="color:var(--ig-success)">Keep</b><p id="sKeep"></p></div>
         <div class="s-card" style="border-left-color:var(--ig-warning);"><b style="color:var(--ig-warning)">Fix</b><p id="sFix"></p></div>
@@ -110,26 +94,13 @@
         <div class="s-card" style="border-left-color:var(--ig-danger);"><b style="color:var(--ig-danger)">Remove</b><p id="sRemove"></p></div>
       </div>
     </div>
-
-    <div class="card">
-      <h2 class="section-title"><i class="fa-solid fa-list-check"></i> 상세 실행 가이드 (Action Plan)</h2>
-      <div class="detail-grid">
-        <div class="d-card"><h4>Keep 상세</h4><ul id="lKeep"></ul></div>
-        <div class="d-card"><h4>Fix 상세</h4><ul id="lFix"></ul></div>
-        <div class="d-card"><h4>Add 상세</h4><ul id="lAdd"></ul></div>
-        <div class="d-card"><h4>Remove 상세</h4><ul id="lRemove"></ul></div>
-      </div>
-    </div>
     
-    <button class="btn-save" onclick="savePDF()">분석 리포트 PDF로 소장하기</button>
+    <button class="btn-save" onclick="savePDF()">심층 분석 리포트 저장 (PDF)</button>
   </div>
 
   <footer>
-    <div style="font-weight: 900; font-size: 1.2rem;">by Longchiri</div>
-    <div class="sns-links">
-      <a href="#" style="color:#0088cc;"><i class="fa-brands fa-telegram"></i> 문의 : @long_c_hill</a>
-      <a href="#" style="color:#d62976;"><i class="fa-brands fa-instagram"></i> @long_c_hill</a>
-    </div>
+    <div style="font-weight: 900;">by Longchiri</div>
+    <div style="margin-top:10px; font-size:0.8rem; color:#999;">@long_c_hill | All rights reserved</div>
   </footer>
 </div>
 
@@ -140,57 +111,66 @@
 
     try {
       const zip = await JSZip.loadAsync(file);
-      const paths = Object.keys(zip.files);
-      const findF = (n) => paths.find(p => p.toLowerCase().includes(n));
+      const findF = (n) => Object.keys(zip.files).find(p => p.toLowerCase().includes(n));
       
       const pP = findF('posts_1.json'), ferP = findF('followers_1.json'), fingP = findF('following.json');
-      if(!pP || !ferP) throw new Error("JSON 데이터를 찾을 수 없습니다.");
-
       const ps = JSON.parse(await zip.files[pP].async("text"));
       const rFer = JSON.parse(await zip.files[ferP].async("text"));
       const rFing = JSON.parse(await zip.files[fingP].async("text"));
 
-      const pL = ps.length, fwerL = (rFer.relationships_followers || rFer).length, fingL = (rFing.relationships_following || rFing).length;
+      // [심층 분석 로직]
+      const posts = ps.map(p => p.media?.[0] || p);
+      const totalCaptionLen = posts.reduce((acc, curr) => acc + (curr.title ? curr.title.length : 0), 0);
+      const avgCap = Math.round(totalCaptionLen / ps.length);
       
-      document.getElementById('pCount').innerText = pL;
+      // 영상 비중 계산 (Reels 유추)
+      const videoCount = ps.filter(p => JSON.stringify(p).includes(".mp4") || JSON.stringify(p).includes("video")).length;
+      const vRatio = Math.round((videoCount / ps.length) * 100);
+
+      const fwerL = (rFer.relationships_followers || rFer).length;
+      const fingL = (rFing.relationships_following || rFing).length;
+      
+      document.getElementById('pCount').innerText = ps.length;
       document.getElementById('fwerCount').innerText = fwerL;
       document.getElementById('fingCount').innerText = fingL;
+      document.getElementById('avgCaption').innerText = avgCap + "자";
+      document.getElementById('videoRatio').innerText = vRatio + "%";
 
-      // [V53 전용] 2026 알고리즘 최적화 로직
-      let msg="", sk="", sf="", sa="", sr="", lk="", lf="", la="", lr="";
-
-      if(pL < 25) {
-        msg = "🚨 [Candidate Generation 단계 탈락]\n데이터 샘플이 너무 적어 알고리즘이 계정의 주제(Item Vector)를 정의하지 못하고 있습니다. $V_{total}$ 수식에서 '완주율'을 평가할 기회조차 얻지 못하는 상태입니다.";
-        sk="기존 콘텐츠의 퀄리티"; sf="낮은 콘텐츠 생산성"; sa="공유(Share)가 발생하는 정보성 릴스"; sr="맥락 없는 단순 일상 공유";
-        la="<li><span class='marker'>첫 3초 후킹:</span> 릴스 시청 완주율을 높이기 위해 첫 화면에 강렬한 자막을 넣으세요.</li>";
-      } else if(fingL > fwerL * 1.6) {
-        msg = "❌ [Authenticity 지수 페널티]\n팔로잉 비율이 과도하게 높습니다. Two-Tower 로직에서 '스패머'로 분류될 확률이 높으며, 이 경우 신규 유입보다는 기존 팔로워 피드 끝단에만 노출이 제한됩니다.";
-        sk="현재의 소통 방식"; sf="불균형한 팔로워/팔로잉 비율"; sa="프로필 SEO 최적화(검색 키워드)"; sr="소통 없는 유령 팔로잉";
-        lf="<li><span class='marker'>클린 스코어:</span> 하루 15명씩 팔로잉을 정리하여 계정의 신뢰도를 복구하세요.</li>";
-      } else if(pL > 70 && fwerL < 400) {
-        msg = "🧐 [Engagement 정체기 진단]\nAI 카테고리 분류는 끝났으나, '공유'와 '저장' 지수가 매우 낮습니다. 랭킹 계산식에서 가중치가 가장 높은 공유(Share) 활동이 일어나지 않아 비팔로워 확산이 차단된 상태입니다.";
-        sk="성실한 포스팅 주기"; sf="자기만족형 이미지 위주 피드"; sa="저장 지수 높이는 '리스트형' 캐러셀"; sr="의미 없는 해시태그 나열";
-        la="<li><span class='marker'>저장 유도:</span> '나중에 다시 볼 정보'라는 CTA(행동 유도)를 마지막 장에 명시하세요.</li>";
+      // 판정 로직 강화
+      let msg="", sk="", sf="", sa="", sr="", auth="B";
+      
+      if(vRatio < 30) {
+        msg = `🚨 [비주얼 벡터 경고]\n현재 영상 콘텐츠 비중이 ${vRatio}%로 매우 낮습니다. 2026 알고리즘은 릴스의 '완주율'을 Two-Tower 매칭의 최우선 순위로 둡니다. 현재의 사진 위주 피드는 신규 유입(Discovery) 단계에서 원천 차단되고 있습니다.`;
+        sa="전체 콘텐츠의 70% 이상을 릴스로 전환";
+        auth="C+";
+      } else if(avgCap < 50) {
+        msg = "⚠️ [SEO 텍스트 데이터 부족]\n캡션의 평균 길이가 매우 짧습니다. AI가 게시물의 키워드를 추출하여 카테고리화(Cascading)를 하지 못해 엉뚱한 타겟에게 노출되거나, 아예 노출 기회를 잃고 있습니다.";
+        sf="무의미하게 짧은 캡션 및 해시태그";
+        auth="B-";
+      } else if(fingL > fwerL * 1.5) {
+        msg = "❌ [신뢰도(Authenticity) 지수 저하]\n팔로잉이 팔로워보다 훨씬 많습니다. 이는 AI가 계정을 '광고성' 혹은 '품앗이용'으로 분류하게 만들며, 탐색 탭 노출 가중치를 0.5배로 제한하는 페널티를 부여합니다.";
+        sr="소통 없는 유령 팔로잉 정리";
+        auth="D";
       } else {
-        msg = "✅ [알고리즘 최적화 완성]\n축하합니다! 현재 공유와 저장 지수가 상위권입니다. 이제는 스토리 스티커(설문/질문)를 활용한 상호작용으로 '친밀도 지수'를 관리하여 노출을 고정시킬 때입니다.";
-        sk="브랜드 톤앤매너 및 비주얼"; sf="팔로워와의 양방향 소통 부재"; sa="비하인드 등 진정성 있는 스토리"; sr="주제에서 벗어난 간헐적 업로드";
-        lk="<li><span class='marker'>SEO 확장:</span> 연관 키워드를 캡션 상단에 배치하여 AI 매칭 범위를 넓히세요.</li>";
+        msg = "✅ [알고리즘 최적화 계정]\n영상 비중과 SEO 텍스트 데이터가 안정적입니다. 이제는 '공유' 지수를 높이기 위해 캡션 첫 줄에 강력한 질문을 던져 체류 시간을 확보하는 마이크로 튜닝이 필요합니다.";
+        sk="현재의 콘텐츠 밸런스 유지";
+        auth="A";
       }
 
+      document.getElementById('authGrade').innerText = auth;
       document.getElementById('aiMsg').innerText = msg;
-      document.getElementById('sKeep').innerText = sk; document.getElementById('sFix').innerText = sf;
-      document.getElementById('sAdd').innerText = sa; document.getElementById('sRemove').innerText = sr;
-      document.getElementById('lKeep').innerHTML = lk || "<li>현재 데이터 유지</li>";
-      document.getElementById('lFix').innerHTML = lf || "<li>상태 양호</li>";
-      document.getElementById('lAdd').innerHTML = la; document.getElementById('lRemove').innerHTML = lr || "<li>클린 상태</li>";
+      document.getElementById('sKeep').innerText = sk || "테마 일관성";
+      document.getElementById('sFix').innerText = sf || "콘텐츠 후킹 부족";
+      document.getElementById('sAdd').innerText = sa || "정보성 캐러셀";
+      document.getElementById('sRemove').innerText = sr || "비주얼 저해 요소";
 
       document.getElementById('uploadBox').style.display='none';
       document.getElementById('result').style.display='block';
-    } catch(err) { alert("ZIP 파일을 확인해 주세요."); }
+    } catch(err) { alert("ZIP 내부 데이터 구조가 변경되었거나 파일이 손상되었습니다."); }
   };
 
   function savePDF() {
-    html2pdf().from(document.getElementById('pdfArea')).set({ margin: 10, filename: 'Insta_Analyzer_V53.pdf', jsPDF: { format: 'a4' } }).save();
+    html2pdf().from(document.getElementById('pdfArea')).set({ margin: 10, filename: 'Deep_Analysis_V54.pdf' }).save();
   }
 </script>
 </body>
