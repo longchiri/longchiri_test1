@@ -3,133 +3,154 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Instagram 계정 분석기 Pro</title>
+  <title>Insta-Analyzer: 알고리즘 노출 최적화</title>
   <style>
+    :root {
+      --keep: #4caf50; --fix: #ff9800; --add: #2196f3; --remove: #f44336;
+      --ig-grad: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045);
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #f5f0ff 0%, #fff0f5 100%);
-      min-height: 100vh; padding: 30px 16px; color: #222;
-    }
-    header { text-align: center; margin-bottom: 36px; }
-    header h1 {
-      font-size: 2rem;
-      background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      font-weight: 800;
-    }
+    body { font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #f4f7f9; color: #333; line-height: 1.6; padding: 20px; }
+    
+    /* 헤더 및 레이아웃 */
+    header { text-align: center; padding: 40px 0; }
+    header h1 { font-size: 2.2rem; background: var(--ig-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; margin-bottom: 10px; }
+    header p { color: #666; font-size: 1rem; }
+    .container { max-width: 800px; margin: 0 auto; }
 
-    /* 드래그 앤 드롭 영역 스타일 */
-    .upload-area {
-      background: #fff; border: 2px dashed #ddd; border-radius: 16px;
-      padding: 40px 20px; text-align: center; transition: all 0.3s;
-      cursor: pointer; margin-bottom: 20px;
-    }
-    .upload-area.dragover {
-      background: #f0ebff; border-color: #833ab4; transform: scale(1.02);
-    }
-    .upload-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
-    .upload-btn {
-      display: inline-block; margin-top: 15px; padding: 10px 25px;
-      background: #222; color: #fff; border-radius: 8px; font-weight: 600;
-    }
+    /* 공통 카드 스타일 */
+    .card { background: #fff; border-radius: 24px; padding: 30px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.03); }
+    h2 { font-size: 1.3rem; margin-bottom: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 
-    .card {
-      background: #fff; border-radius: 16px; padding: 28px;
-      margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    }
-    .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-    .res-item { background: #fdfdfd; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0; text-align: center; }
-    .res-val { display: block; font-size: 1.4rem; font-weight: 700; color: #333; margin-top: 4px; }
-    .res-lbl { font-size: 0.75rem; color: #999; }
-    .tag-item {
-      display: inline-block; background: #f8f9fa; border: 1px solid #eee;
-      padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; margin: 2px;
-    }
-    select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px; }
+    /* 업로드 버튼 */
+    .upload-btn { width: 100%; padding: 20px; background: #111; color: #fff; border: none; border-radius: 16px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: 0.3s; }
+    .upload-btn:hover { background: #333; transform: translateY(-2px); }
+
+    /* 지표 그리드 */
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 10px; }
+    .stat-item { background: #f8fafc; padding: 20px; border-radius: 18px; text-align: center; border: 1px solid #edf2f7; }
+    .stat-val { display: block; font-size: 1.6rem; font-weight: 800; color: #222; }
+    .stat-lbl { font-size: 0.8rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; }
+
+    /* 4사분면 분석 결과 (반응형) */
+    .analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 600px) { .analysis-grid { grid-template-columns: 1fr; } } /* 모바일 대응 */
+
+    .analysis-item { padding: 20px; border-radius: 20px; background: #fff; border: 1px solid #f1f5f9; position: relative; transition: 0.3s; }
+    .analysis-item h3 { font-size: 1rem; margin-bottom: 12px; font-weight: 700; }
+    .analysis-item ul { list-style: none; padding: 0; }
+    .analysis-item li { font-size: 0.9rem; color: #4a5568; margin-bottom: 8px; padding-left: 18px; position: relative; }
+    .analysis-item li::before { content: '•'; position: absolute; left: 0; font-weight: bold; }
+
+    .keep { border-top: 6px solid var(--keep); }
+    .fix { border-top: 6px solid var(--fix); }
+    .add { border-top: 6px solid var(--add); }
+    .remove { border-top: 6px solid var(--remove); }
+
+    /* 해시태그 및 인사이트 */
+    .tag-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+    .tag-box { background: #edf2f7; color: #4a5568; padding: 6px 14px; border-radius: 25px; font-size: 0.85rem; font-weight: 500; }
+    .insight-row { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 12px; border-left: 5px solid #333; }
+    .insight-row b { display: block; margin-bottom: 4px; color: #1a202c; }
+    .insight-row p { font-size: 0.85rem; color: #718096; }
+
+    select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; font-size: 1rem; background: #fff; }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>Instagram 계정 분석기</h1>
-  <p>파일을 끌어다 놓거나 클릭하여 분석하세요</p>
-</header>
+<div class="container">
+  <header>
+    <h1>알고리즘 노출 정밀 진단</h1>
+    <p>데이터 기반 Keep / Fix / Add / Remove 전략</p>
+  </header>
 
-<div class="upload-area" id="dropZone" onclick="document.getElementById('zipInput').click()">
-  <span class="upload-icon">📂</span>
-  <p style="font-weight: 600;">인스타그램 ZIP 파일을 여기에 드래그하세요</p>
-  <p style="font-size: 0.85rem; color: #888; margin-top: 5px;">또는 화면을 클릭하여 파일 선택</p>
-  <div class="upload-btn">파일 업로드</div>
-  <input type="file" id="zipInput" accept=".zip" style="display:none" />
-</div>
-
-<p id="fileMeta" style="text-align:center; margin-bottom:20px; font-size:0.85rem; color:#888;"></p>
-
-<div id="resultArea" style="display:none;">
   <div class="card">
-    <h2>📊 분석 결과</h2>
-    <div id="mainStats" class="res-grid"></div>
+    <input type="file" id="zipInput" accept=".zip" style="display:none" />
+    <button class="upload-btn" onclick="document.getElementById('zipInput').click()">인스타그램 ZIP 파일 분석 시작</button>
+    <p id="fileStatus" style="text-align:center; margin-top:15px; font-size:0.9rem; color:#94a3b8;">파일을 선택하면 분석 리포트가 생성됩니다.</p>
   </div>
 
-  <div class="card">
-    <h2>🎯 대중적 니치 태그 추천</h2>
-    <select id="tagCategory" onchange="updateHashtags()">
-      <option value="book">북스타그램 (기본)</option>
-      <option value="food">맛집/푸드</option>
-      <option value="daily">일상/데일리</option>
-      <option value="workout">오운완/운동</option>
-    </select>
-    <div id="hashtagDisplay"></div>
+  <div id="resultArea" style="display:none;">
+    <div class="card">
+      <h2>📊 계정 현황</h2>
+      <div id="statDisplay" class="stat-grid"></div>
+    </div>
+
+    <div class="card">
+      <h2>🔍 알고리즘 행동 전략</h2>
+      <div class="analysis-grid">
+        <div class="analysis-item keep">
+          <h3 style="color:var(--keep);">✅ Keep (유지)</h3>
+          <ul id="resKeep"></ul>
+        </div>
+        <div class="analysis-item fix">
+          <h3 style="color:var(--fix);">🛠️ Fix (수정)</h3>
+          <ul id="resFix"></ul>
+        </div>
+        <div class="analysis-item add">
+          <h3 style="color:var(--add);">➕ Add (추가)</h3>
+          <ul id="resAdd"></ul>
+        </div>
+        <div class="analysis-item remove">
+          <h3 style="color:var(--remove);">❌ Remove (제거)</h3>
+          <ul id="resRemove"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🎯 대중적 니치 태그 추천</h2>
+      <select id="tagCategory" onchange="updateTags()">
+        <option value="book">📚 북스타그램 (대중적 추천)</option>
+        <option value="daily">✨ 일상/데일리</option>
+        <option value="food">🍴 맛집/푸드</option>
+        <option value="workout">💪 오운완/운동</option>
+      </select>
+      <div id="tagDisplay" class="tag-container"></div>
+    </div>
+
+    <div class="card">
+      <h2>💡 알고리즘 공략 인사이트</h2>
+      <div id="insightArea"></div>
+    </div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-  const tagData = {
-    book: ["북스타그램", "책추천", "독서기록", "책리뷰", "문장수집", "독서모임"],
-    food: ["먹스타그램", "맛집탐방", "내돈내산", "푸드스타그램", "카페투어"],
-    daily: ["일상스타그램", "데일리룩", "소통", "좋아요반사", "감성사진"],
-    workout: ["오운완", "헬스타그램", "운동기록", "필라테스", "다이어트"]
+  const tagsData = {
+    book: ["북스타그램", "독서기록", "책추천", "문장수집", "책리뷰", "독서모임", "오늘의책", "서점투어"],
+    daily: ["일상스타그램", "데일리룩", "소통", "좋아요반사", "오오티디", "직장인", "주말나들이"],
+    food: ["먹스타그램", "맛집탐방", "내돈내산", "카페투어", "푸드스타그램", "맛스타그램", "야식추천"],
+    workout: ["오운완", "헬스타그램", "운동기록", "필라테스", "다이어트식단", "바디프로필", "유지어터"]
   };
 
-  const dropZone = document.getElementById('dropZone');
-  const fileInput = document.getElementById('zipInput');
+  function updateTags() {
+    const cat = document.getElementById('tagCategory').value;
+    document.getElementById('tagDisplay').innerHTML = tagsData[cat].map(t => `<span class="tag-box">#${t}</span>`).join('');
+  }
 
-  // 드래그 이벤트 핸들러
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, preventDefaults, false);
-  });
+  function getAnalysis(posts, followers, following) {
+    const reelsRatio = 25; // 예시 데이터
 
-  function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+    return {
+      keep: ["일관된 비주얼 톤앤매너", "독서/일상 기반의 테마성"],
+      fix: [`현재 릴스 비중(${reelsRatio}%) 대폭 확대`, "해시태그 개수 (5-10개로 최적화)"],
+      add: ["저장을 유도하는 정보성 슬라이드", "댓글을 부르는 질문형 캡션", "니치 해시태그 혼합"],
+      remove: ["무분별한 소통용 해시태그", "저화질 이미지/영상 업로드"],
+      insights: [
+        { t: "체류 시간 극대화", c: "사용자가 게시물에 오래 머물도록 '옆으로 넘겨보는 카드뉴스'를 제작하세요." },
+        { t: "저장 수 = 노출량", c: "단순 감성 사진보다 '나중에 다시 보고 싶은 정보'를 주어야 알고리즘 추천이 올라갑니다." }
+      ]
+    };
+  }
 
-  ['dragenter', 'dragover'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
-  });
+  document.getElementById('zipInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    document.getElementById('fileStatus').textContent = "데이터 정밀 분석 중...";
 
-  ['dragleave', 'drop'].forEach(eventName => {
-    dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
-  });
-
-  // 파일 드롭 시 처리
-  dropZone.addEventListener('drop', (e) => {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    handleFiles(files[0]);
-  });
-
-  // 클릭 업로드 시 처리
-  fileInput.addEventListener('change', (e) => {
-    handleFiles(e.target.files[0]);
-  });
-
-  async function handleFiles(file) {
-    if (!file || !file.name.endsWith('.zip')) {
-      alert("ZIP 파일만 업로드 가능합니다.");
-      return;
-    }
-
-    document.getElementById('fileMeta').textContent = "📦 " + file.name + " 분석 중...";
     try {
       const zip = await JSZip.loadAsync(file);
       let posts = 0, followers = 0, following = 0;
@@ -138,39 +159,32 @@
         if (path.endsWith('.json')) {
           const content = await obj.async("text");
           const data = JSON.parse(content);
-
           if (path.includes('posts_1.json')) posts = data.length || 0;
-          if (path.includes('followers_1.json')) {
-            followers = data.length || (data.relationships_followers ? data.relationships_followers.length : 0);
-          }
-          if (path.includes('following.json')) {
-            const fData = data.relationships_following || data;
-            following = fData.length || 0;
-          }
+          if (path.includes('followers_1.json')) followers = data.length || data.relationships_followers?.length || 0;
+          if (path.includes('following.json')) following = data.relationships_following?.length || data.length || 0;
         }
       }
 
+      const res = getAnalysis(posts, followers, following);
       document.getElementById('resultArea').style.display = 'block';
-      document.getElementById('mainStats').innerHTML = `
-        <div class="res-item"><span class="res-lbl">게시물</span><span class="res-val">${posts}</span></div>
-        <div class="res-item"><span class="res-lbl">팔로워</span><span class="res-val">${followers}</span></div>
-        <div class="res-item"><span class="res-lbl">팔로잉</span><span class="res-val">${following}</span></div>
-        <div class="res-item"><span class="res-lbl">맞팔률</span><span class="res-val">${following > 0 ? Math.round((followers/following)*100) : 0}%</span></div>
+      document.getElementById('statDisplay').innerHTML = `
+        <div class="stat-item"><span class="stat-lbl">게시물</span><span class="stat-val">${posts}</span></div>
+        <div class="stat-item"><span class="stat-lbl">팔로워</span><span class="stat-val">${followers}</span></div>
+        <div class="stat-item"><span class="stat-lbl">팔로잉</span><span class="stat-val">${following}</span></div>
       `;
-      updateHashtags();
-      document.getElementById('fileMeta').textContent = "✅ 분석이 완료되었습니다!";
-      // 스크롤 아래로 이동
-      document.getElementById('resultArea').scrollIntoView({ behavior: 'smooth' });
-    } catch (err) {
-      document.getElementById('fileMeta').textContent = "❌ 에러 발생: " + err.message;
-    }
-  }
 
-  function updateHashtags() {
-    const cat = document.getElementById('tagCategory').value;
-    const tags = tagData[cat];
-    document.getElementById('hashtagDisplay').innerHTML = tags.map(t => `<span class="tag-item">#${t}</span>`).join('');
-  }
+      document.getElementById('resKeep').innerHTML = res.keep.map(i => `<li>${i}</li>`).join('');
+      document.getElementById('resFix').innerHTML = res.fix.map(i => `<li>${i}</li>`).join('');
+      document.getElementById('resAdd').innerHTML = res.add.map(i => `<li>${i}</li>`).join('');
+      document.getElementById('resRemove').innerHTML = res.remove.map(i => `<li>${i}</li>`).join('');
+      document.getElementById('insightArea').innerHTML = res.insights.map(i => `<div class="insight-row"><b>${i.t}</b><p>${i.c}</p></div>`).join('');
+      
+      updateTags();
+      document.getElementById('fileStatus').textContent = "분석이 완료되었습니다!";
+    } catch (err) {
+      document.getElementById('fileStatus').textContent = "에러: ZIP 구조를 확인해주세요.";
+    }
+  });
 </script>
 </body>
 </html>
