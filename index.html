@@ -72,7 +72,7 @@
 <body>
 
 <div class="container" id="pdfArea">
-  <div class="ver-tag">Ver : V42_TB</div>
+  <div class="ver-tag">Ver : V41_TB</div>
 
   <header>
     <div class="author-top">by Longchiri</div>
@@ -132,26 +132,6 @@
       </div>
     </div>
 
-    <div class="card">
-      <h2 style="font-size:1.4rem; font-weight:900; margin-bottom:20px;"><i class="fa-solid fa-lightbulb"></i> 단계별 상세 전략 가이드</h2>
-      <div class="detail-item">
-        <h4 style="color:var(--ig-success)"><i class="fa-solid fa-circle-check"></i> Keep 상세 분석</h4>
-        <div class="detail-content" id="lKeep"></div>
-      </div>
-      <div class="detail-item">
-        <h4 style="color:var(--ig-warning)"><i class="fa-solid fa-circle-exclamation"></i> Fix 상세 분석</h4>
-        <div class="detail-content" id="lFix"></div>
-      </div>
-      <div class="detail-item">
-        <h4 style="color:var(--ig-primary)"><i class="fa-solid fa-circle-plus"></i> Add 상세 분석</h4>
-        <div class="detail-content" id="lAdd"></div>
-      </div>
-      <div class="detail-item">
-        <h4 style="color:var(--ig-danger)"><i class="fa-solid fa-circle-minus"></i> Remove 상세 분석</h4>
-        <div class="detail-content" id="lRemove"></div>
-      </div>
-    </div>
-
     <button class="btn-save" id="saveBtn" onclick="savePDF()">분석 리포트 PDF 저장</button>
   </div>
 
@@ -180,36 +160,43 @@
       const zip = await JSZip.loadAsync(file);
       let ps = [], fers = [], fing = [], profile = null;
 
-      // 파일 탐색 로직 유연화 (모든 폴더 depth 탐색)
+      // 파일명을 기준으로 모든 폴더 내 파일 검색
       const files = Object.keys(zip.files);
       
       for(const path of files) {
         if(zip.files[path].dir) continue;
         
-        // posts_1.json 찾기 (게시물)
+        // 정규식을 사용해 파일 위치에 상관없이 매칭
+        // 게시물 데이터 (예: posts_1.json, content/posts_1.json)
         if(path.match(/posts(_\d+)?\.json$/i)) {
-          const data = JSON.parse(await zip.files[path].async("text"));
-          ps = ps.concat(data);
+          const raw = await zip.files[path].async("text");
+          const data = JSON.parse(raw);
+          // 인스타그램 데이터 구조가 배열이거나 특정 객체 안에 담긴 경우 모두 대응
+          if(Array.isArray(data)) ps = ps.concat(data);
+          else if(data.items) ps = ps.concat(data.items);
         }
-        // followers_1.json 찾기 (팔로워)
+        // 팔로워 데이터
         if(path.match(/followers(_\d+)?\.json$/i)) {
-          const data = JSON.parse(await zip.files[path].async("text"));
-          fers = data.relationships_followers || data;
+          const raw = await zip.files[path].async("text");
+          const data = JSON.parse(raw);
+          fers = data.relationships_followers || (Array.isArray(data) ? data : []);
         }
-        // following.json 찾기 (팔로잉)
+        // 팔로잉 데이터
         if(path.match(/following\.json$/i)) {
-          const data = JSON.parse(await zip.files[path].async("text"));
-          fing = data.relationships_following || data;
+          const raw = await zip.files[path].async("text");
+          const data = JSON.parse(raw);
+          fing = data.relationships_following || (Array.isArray(data) ? data : []);
         }
-        // personal_information.json 찾기 (프로필)
+        // 프로필 데이터
         if(path.match(/personal_information\.json$/i)) {
-          profile = JSON.parse(await zip.files[path].async("text"));
+          const raw = await zip.files[path].async("text");
+          profile = JSON.parse(raw);
         }
       }
 
-      // 데이터가 하나도 안 찾아졌을 때의 안전장치
+      // 필수 데이터 확인 (게시물이나 팔로워 중 하나라도 있어야 진행)
       if(ps.length === 0 && fers.length === 0) {
-        throw new Error("Data not found");
+        throw new Error("Missing Data");
       }
 
       let uid = "User";
@@ -221,24 +208,19 @@
       const fwerL = fers.length || 0;
       const fingL = fing.length || 0;
       const er = (fingL > 0) ? (fwerL/fingL).toFixed(2) : 0;
-      const pot = Math.min(98.8, (pL*0.45 + fwerL/10 + 42)).toFixed(1);
+      const pot = Math.min(99, (pL*0.48 + fwerL/9 + 40)).toFixed(1);
 
       document.getElementById('userNameTitle').innerHTML = `<i class="fa-solid fa-chart-line"></i> @${uid} 계정 정밀 진단`;
       document.getElementById('pCount').innerText = pL;
       document.getElementById('fwerCount').innerText = fwerL;
       document.getElementById('fingCount').innerText = fingL;
       document.getElementById('gBar').style.width = pot + "%";
-      document.getElementById('gText').innerText = `@${uid} 님의 분석 결과, 노출 잠재력은 약 ${pot}% 입니다.`;
+      document.getElementById('gText').innerText = `@${uid} 님의 분석 결과, 노출 잠재력은 ${pot}% 입니다.`;
 
-      document.getElementById('sKeep').innerText = `브랜드 테마와 고정된 포스팅 주기 유지`;
-      document.getElementById('sFix').innerText = `영향력 지수 ${er}를 개선하기 위한 소통 전략 수정`;
-      document.getElementById('sAdd').innerText = `저장 잠재력 폭발을 위한 정보성 릴스 주 2회 추가`;
-      document.getElementById('sRemove').innerText = `신뢰도 하락 방지를 위해 맞팔하지 않는 유령 팔로잉 정리`;
-
-      document.getElementById('lKeep').innerHTML = `<ul><li>누적된 ${pL}개의 포스트는 계정의 정체성을 증명하는 핵심입니다. 현재의 톤앤매너를 유지하세요.</li><li>일관된 비주얼은 탐색 탭 노출 시 클릭을 유도하는 가장 강력한 자산입니다.</li></ul>`;
-      document.getElementById('lFix').innerHTML = `<ul><li>현재 영향력 지수는 ${er}입니다. 상호작용이 멈춘 계정을 정리하여 팔로워 대비 반응률을 높이세요.</li><li>발행물의 50% 이상을 릴스로 전환하여 정체된 알고리즘에 새로운 활력을 불어넣어야 합니다.</li></ul>`;
-      document.getElementById('lAdd').innerHTML = `<ul><li>분석 결과 저장 잠재력이 매우 높습니다. 유저들이 나중에 다시 꺼내 볼 만한 '꿀팁' 정보를 추가하세요.</li><li>가독성 높은 텍스트 레이아웃을 활용한 릴스가 도달 및 저장 지수를 획기적으로 높여줍니다.</li></ul>`;
-      document.getElementById('lRemove').innerHTML = `<ul><li>의미 없는 대량 팔로잉은 계정 지수(Trust Score)를 낮추는 원인입니다. 약 ${Math.floor(fingL*0.2)}명을 정리하세요.</li><li>상호작용 밀도를 높이면 알고리즘이 계정을 더 건강한 소통 채널로 인식하여 노출을 늘려줍니다.</li></ul>`;
+      document.getElementById('sKeep').innerText = `누적된 ${pL}개의 포스트를 통해 형성된 브랜드 일관성을 흔들림 없이 유지하세요.`;
+      document.getElementById('sFix').innerText = `팔로워 대비 반응률을 높이기 위해 소통 없는 계정을 정리하고 릴스 비중을 강화하세요.`;
+      document.getElementById('sAdd').innerText = `정보성 카드뉴스나 가이드형 릴스를 주 2회 고정 편성하여 저장 지수를 극대화하세요.`;
+      document.getElementById('sRemove').innerText = `계정 지수(Trust Score)에 악영향을 주는 약 ${Math.floor(fingL*0.2)}명의 유령 팔로잉을 삭제하세요.`;
 
       document.getElementById('result').style.display = 'block';
       document.getElementById('guideSection').style.display = 'none';
@@ -246,7 +228,7 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch(err) {
-      alert("ZIP 분석 중 오류가 발생했습니다. 'JSON' 형식으로 정확히 다운로드된 파일인지 확인해주세요.");
+      alert("ZIP 분석 중 오류가 발생했습니다. 'JSON' 형식으로 올바르게 다운로드된 인스타그램 데이터인지 다시 확인해 주세요.");
     }
   };
 
