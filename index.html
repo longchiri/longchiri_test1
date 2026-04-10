@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Insta-Analyzer Pro</title>
+  <style>
+    /* ... (기존 style 코드와 동일하지만 포인트 컬러 추가) ... */
+    :root { --ig-purple: #833ab4; --ig-red: #fd1d1d; --ig-orange: #fcb045; }
+    .hashtag-tag {
+      display: inline-block; background: #f0f2f5; color: #4b4f56;
+      padding: 5px 10px; border-radius: 6px; margin: 4px; font-size: 0.85rem;
+      border: 1px solid #ddd;
+    }
+    .hashtag-category { font-weight: bold; color: var(--ig-purple); margin-top: 15px; display: block; }
+  </style>
+</head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<body>
+
+<header>
+  <p style="font-size:1rem; margin-bottom:6px;"><b style="color:#ccc;">by</b> <span style="color:#86efac; font-weight:600;">longchiri</span></p>
+  <h1>Insta-Analyzer Pro</h1>
+  <p>AI 기반 정밀 분석 및 맞춤형 니치 해시태그 발굴</p>
+</header>
+
+<script>
+// 1. 니치 해시태그 데이터베이스 (확장 가능)
+const NICHE_DATABASE = {
+  "기본": ["인스타감성", "데일리", "소통", "좋아요반사", "일상스타그램"],
+  "뷰티": ["Kbeauty", "메이크업", "화장품추천", "코덕맞팔", "스킨케어"],
+  "맛집": ["먹스타그램", "핫플추천", "맛집탐방", "내돈내산", "푸드스타그램"],
+  "일상": ["오운완", "직장인스타그램", "주말나들이", "기록", "소확행"],
+  "북클럽": ["책스타그램", "독서기록", "문장수집", "플레이리스트", "독서모임"]
+};
+
+// 2. 강화된 ZIP 파서
+async function processZip(file) {
+  const statusEl = document.getElementById('fileMeta');
+  try {
+    statusEl.textContent = '데이터 심층 분석 중...';
+    const zip = await JSZip.loadAsync(file);
+    const allPaths = Object.keys(zip.files).filter(p => !zip.files[p].dir);
+    
+    const jsons = {};
+    // 모든 JSON 파일을 찾아서 필요한 키워드가 있으면 다 읽어들임
+    for (const path of allPaths) {
+      if (!path.endsWith('.json')) continue;
+      const text = await zip.files[path].async('text');
+      const content = JSON.parse(text);
+      
+      if (path.includes('followers')) jsons.followers = content;
+      if (path.includes('following')) jsons.following = content;
+      if (path.includes('posts_1') || path.includes('media.json')) jsons.posts = content;
+      if (path.includes('reels')) jsons.reels = content;
+      if (path.includes('personal_information')) jsons.personal = content;
+    }
+
+    parsedData = parseInstagramZIP(jsons);
+    showParsedResult(file.name, parsedData);
+  } catch(err) {
+    statusEl.textContent = '파일 구조가 다르거나 오류가 발생했습니다.';
+  }
+}
+
+// 3. 니치 해시태그 추천 로직 (분석 결과에 추가)
+function suggestNicheHashtags(userNiche) {
+  let tags = [];
+  const baseTags = NICHE_DATABASE["기본"];
+  const nicheKey = Object.keys(NICHE_DATABASE).find(k => userNiche.includes(k)) || "일상";
+  const targetTags = NICHE_DATABASE[nicheKey];
+
+  // 니치 태그 알고리즘: 대형(노출) + 중소형(생존) 혼합
+  tags.push(`<span class="hashtag-category">[노출용 대형 태그]</span>`);
+  baseTags.forEach(t => tags.push(`<span class="hashtag-tag">#${t}</span>`));
+  
+  tags.push(`<span class="hashtag-category">[${nicheKey} 특화 니치 태그]</span>`);
+  targetTags.forEach(t => tags.push(`<span class="hashtag-tag">#${t}</span>`));
+  
+  return tags.join('');
+}
+
+// 분석 함수 마지막 부분에 아래 코드 추가
+// ... (기존 analyze 함수 내부)
+const hashtagContainer = document.createElement('div');
+hashtagContainer.className = 'result-card';
+hashtagContainer.innerHTML = `<h2>🎯 맞춤형 니치 해시태그 추천</h2>
+                             <p style="font-size:0.8rem; color:#888; margin-bottom:10px;">회원님의 콘텐츠 분야를 바탕으로 발굴한 태그입니다.</p>
+                             <div id="nicheHashtags">${suggestNicheHashtags(niche)}</div>`;
+document.getElementById('result').appendChild(hashtagContainer);
+</script>
+</body>
+</html>
