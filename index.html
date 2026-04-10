@@ -5,84 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Instagram 계정 분석기 Pro</title>
   <style>
-    /* 기존의 예쁜 디자인 스타일 그대로 유지 */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #f5f0ff 0%, #fff0f5 100%);
-      min-height: 100vh;
-      padding: 30px 16px;
-      color: #222;
+      min-height: 100vh; padding: 30px 16px; color: #222;
     }
     header { text-align: center; margin-bottom: 36px; }
     header h1 {
       font-size: 2rem;
       background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       font-weight: 800;
     }
-    header p { color: #777; margin-top: 8px; font-size: 0.95rem; }
-
     .card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 28px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      background: #fff; border-radius: 16px; padding: 28px;
+      margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     }
-    
-    /* 추가된 해시태그 디자인 */
-    .hashtag-group { margin-top: 15px; }
-    .hashtag-label { font-weight: bold; color: #833ab4; display: block; margin-bottom: 8px; font-size: 0.9rem; }
-    .tag-container { display: flex; flex-wrap: wrap; gap: 6px; }
-    .tag-item {
-      background: #f8f9fa; border: 1px solid #eee;
-      padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; color: #555;
-    }
-    .category-select {
-      width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;
-    }
-    
-    /* 기존 결과 스타일 유지 */
     .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
     .res-item { background: #fdfdfd; padding: 16px; border-radius: 12px; border: 1px solid #f0f0f0; text-align: center; }
     .res-val { display: block; font-size: 1.4rem; font-weight: 700; color: #333; margin-top: 4px; }
-    .res-lbl { font-size: 0.75rem; color: #999; text-transform: uppercase; }
+    .res-lbl { font-size: 0.75rem; color: #999; }
+    .tag-item {
+      display: inline-block; background: #f8f9fa; border: 1px solid #eee;
+      padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; margin: 2px;
+    }
+    select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px; }
   </style>
 </head>
 <body>
 
 <header>
   <h1>Instagram 계정 분석기</h1>
-  <p>데이터 심층 분석 및 대중적 니치 태그 발굴</p>
+  <p>데이터 심층 분석 및 니치 태그 발굴</p>
 </header>
 
 <div class="card">
   <input type="file" id="zipInput" accept=".zip" style="display:none" />
   <button onclick="document.getElementById('zipInput').click()" style="width:100%; padding:15px; background:#222; color:#fff; border:none; border-radius:12px; font-weight:600; cursor:pointer;">인스타그램 ZIP 파일 업로드</button>
-  <p id="fileMeta" style="text-align:center; margin-top:10px; font-size:0.85rem; color:#888;">데이터를 업로드하면 분석이 시작됩니다.</p>
+  <p id="fileMeta" style="text-align:center; margin-top:10px; font-size:0.85rem; color:#888;">파일을 선택해 주세요.</p>
 </div>
 
 <div id="resultArea" style="display:none;">
   <div class="card">
-    <h2>📊 핵심 요약</h2>
+    <h2>📊 분석 결과</h2>
     <div id="mainStats" class="res-grid"></div>
   </div>
 
   <div class="card">
     <h2>🎯 대중적 니치 태그 추천</h2>
-    <p style="font-size:0.85rem; color:#666; margin-bottom:15px;">분야별로 가장 노출이 잘 되는 대중적 태그 조합입니다.</p>
-    
-    <label class="hashtag-label">관심 분야 선택</label>
-    <select class="category-select" id="tagCategory" onchange="updateHashtags()">
+    <select id="tagCategory" onchange="updateHashtags()">
       <option value="book">북스타그램 (기본)</option>
       <option value="food">맛집/푸드</option>
       <option value="daily">일상/데일리</option>
       <option value="workout">오운완/운동</option>
-      <option value="travel">여행/나들이</option>
     </select>
-
     <div id="hashtagDisplay"></div>
   </div>
 </div>
@@ -90,75 +67,55 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
   const tagData = {
-    book: ["북스타그램", "책추천", "독서기록", "책리뷰", "문장수집", "독서모임", "오늘의책", "서점투어", "책읽는습관", "필사"],
-    food: ["먹스타그램", "맛집탐방", "내돈내산", "푸드스타그램", "오늘뭐먹지", "카페투어", "핫플레이스", "맛스타그램", "야식추천", "홈카페"],
-    daily: ["일상스타그램", "데일리룩", "소통", "좋아요반사", "오오티디", "직장인", "주말", "기록", "감성사진", "인생샷"],
-    workout: ["오운완", "운동하는여자", "운동하는남자", "헬스타그램", "바디프로필", "필라테스", "홈트레이닝", "운동기록", "다이어트식단", "유지어터"],
-    travel: ["여행스타그램", "나들이", "국내여행", "해외여행", "여행에미치다", "호캉스", "캠핑", "주말여행", "여행기록", "체크인챌린지"]
+    book: ["북스타그램", "책추천", "독서기록", "책리뷰", "문장수집", "독서모임"],
+    food: ["먹스타그램", "맛집탐방", "내돈내산", "푸드스타그램", "카페투어"],
+    daily: ["일상스타그램", "데일리룩", "소통", "좋아요반사", "감성사진"],
+    workout: ["오운완", "헬스타그램", "운동기록", "필라테스", "다이어트"]
   };
 
   function updateHashtags() {
-    const category = document.getElementById('tagCategory').value;
-    const container = document.getElementById('hashtagDisplay');
-    const tags = tagData[category];
-    
-    container.innerHTML = `
-      <div class="hashtag-group">
-        <span class="hashtag-label">#${category.toUpperCase()} 대중적 태그</span>
-        <div class="tag-container">
-          ${tags.map(t => `<span class="tag-item">#${t}</span>`).join('')}
-        </div>
-        <button onclick="copyTags('${tags.join(' #')}')" style="margin-top:10px; font-size:0.75rem; border:none; background:none; color:#833ab4; cursor:pointer; font-weight:bold;">태그 복사하기</button>
-      </div>
-    `;
+    const cat = document.getElementById('tagCategory').value;
+    const tags = tagData[cat];
+    document.getElementById('hashtagDisplay').innerHTML = tags.map(t => `<span class="tag-item">#${t}</span>`).join('');
   }
 
-  function copyTags(text) {
-    navigator.clipboard.writeText('#' + text);
-    alert('태그가 복사되었습니다!');
-  }
-
-  // 강화된 ZIP 파싱 로직
   document.getElementById('zipInput').addEventListener('change', async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     document.getElementById('fileMeta').textContent = "분석 중...";
-    const zip = await JSZip.loadAsync(file);
-    let posts = 0;
-    let followers = 0;
-    let following = 0;
+    try {
+      const zip = await JSZip.loadAsync(file);
+      let posts = 0, followers = 0, following = 0;
 
-    // 모든 경로를 순회하며 데이터 추출
-    for (const [path, obj] of Object.entries(zip.files)) {
-      if (path.includes('posts_1.json') || path.includes('media.json')) {
-        const data = JSON.parse(await obj.async("text"));
-        posts = data.length || data.items?.length || 0;
+      for (const [path, obj] of Object.entries(zip.files)) {
+        // 파일명 기반 검색 (폴더 경로 무시)
+        if (path.endsWith('.json')) {
+          const content = await obj.async("text");
+          const data = JSON.parse(content);
+
+          if (path.includes('posts_1.json')) posts = data.length || 0;
+          if (path.includes('followers_1.json')) followers = data.length || (data.relationships_followers ? data.relationships_followers.length : 0);
+          if (path.includes('following.json')) {
+            const fData = data.relationships_following || data;
+            following = fData.length || 0;
+          }
+        }
       }
-      if (path.includes('followers_1.json')) {
-        const data = JSON.parse(await obj.async("text"));
-        followers = data.length || 0;
-      }
-      if (path.includes('following.json')) {
-        const data = JSON.parse(await obj.async("text"));
-        const followData = data.relationships_following || data;
-        following = followData.length || 0;
-      }
+
+      document.getElementById('resultArea').style.display = 'block';
+      document.getElementById('mainStats').innerHTML = `
+        <div class="res-item"><span class="res-lbl">게시물</span><span class="res-val">${posts}</span></div>
+        <div class="res-item"><span class="res-lbl">팔로워</span><span class="res-val">${followers}</span></div>
+        <div class="res-item"><span class="res-lbl">팔로잉</span><span class="res-val">${following}</span></div>
+        <div class="res-item"><span class="res-lbl">맞팔률</span><span class="res-val">${following > 0 ? Math.round((followers/following)*100) : 0}%</span></div>
+      `;
+      updateHashtags();
+      document.getElementById('fileMeta').textContent = "분석 완료!";
+    } catch (err) {
+      document.getElementById('fileMeta').textContent = "에러 발생: " + err.message;
     }
-
-    // 결과 렌더링
-    document.getElementById('resultArea').style.display = 'block';
-    const stats = document.getElementById('mainStats');
-    stats.innerHTML = `
-      <div class="res-item"><span class="res-lbl">게시물</span><span class="res-val">${posts}</span></div>
-      <div class="res-item"><span class="res-lbl">팔로워</span><span class="res-val">${followers}</span></div>
-      <div class="res-item"><span class="res-lbl">팔로잉</span><span class="res-val">${following}</span></div>
-      <div class="res-item"><span class="res-lbl">맞팔률</span><span class="res-val">${following > 0 ? Math.round((followers/following)*100) : 0}%</span></div>
-    `;
-    updateHashtags();
-    document.getElementById('fileMeta').textContent = "분석 완료!";
   });
 </script>
-
 </body>
 </html>
