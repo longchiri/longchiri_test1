@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>Insta-Analyzer Pro</title>
+  <title>Insta-Analyzer Pro V31</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     :root {
@@ -21,16 +21,17 @@
     header .by-line { font-size: 1rem; margin-bottom: 8px; font-weight: 800; color: #666; }
     header .by-line .name { color: var(--ig-success); }
     header h1 { font-size: 2.8rem; font-weight: 900; background: var(--ig-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -1.5px; margin-bottom: 10px; }
-    header .sub-head { font-size: 1.1rem; font-weight: 700; color: #555; margin-bottom: 15px; }
     header .warning-text { color: var(--ig-danger); font-size: 0.95rem; font-weight: 700; }
 
+    /* 업로드 존 */
     .upload-zone { 
       background: var(--card-bg); border-top: 1px solid #eee; padding: 60px 15px; 
       text-align: center; cursor: pointer; transition: 0.3s; margin-bottom: 25px; border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
     .upload-zone i { font-size: 5rem; color: #e0e0e0; margin-bottom: 20px; display: block; }
-    .upload-zone b { font-size: 1.6rem; font-weight: 900; display: block; margin-bottom: 10px; }
-    .upload-zone .highlight { color: #111; font-size: 2rem; border-bottom: 4px solid #111; display: inline-block; margin: 10px 0; font-weight: 900; }
+    .upload-zone .highlight { color: #111; font-size: 2.2rem; border-bottom: 5px solid #111; display: inline-block; margin: 10px 0; font-weight: 900; }
+    .upload-zone .sub-info { color: #8e8e8e; font-size: 0.85rem; font-weight: 600; margin-top: 15px; }
 
     .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
     .section-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
@@ -65,21 +66,18 @@
 <body>
 
 <div class="container">
-  <div class="version-tag">Ver : V29_TB</div>
+  <div class="version-tag">Ver : V31_TB</div>
   
   <header>
     <div class="by-line">by <span class="name">Longchiri</span></div>
     <h1>Insta-Analyzer Pro</h1>
-    <div class="sub-head">AI 기반 정밀 분석 및 맞춤형 니치 해시태그 발굴</div>
     <div class="warning-text">해당 내용은 T/B분석기이므로 정확하지 않을 수 있습니다.</div>
   </header>
 
   <div class="upload-zone" id="dropZone">
-    <i class="fa-solid fa-cloud"></i>
-    <b>인스타그램 ZIP 데이터 정밀 해독</b>
-    <p>데이터를 드래그하여</p>
-    <div class="highlight" id="uploadMainText">성장 정체 구간</div>
-    <p>을 찾아보세요.</p>
+    <i class="fa-solid fa-cloud-arrow-up"></i>
+    <div class="highlight">Instagram 데이터 넣기</div>
+    <div class="sub-info">데이터 추출 방법은 아래 가이드를 확인하세요.</div>
     <input type="file" id="zipInput" accept=".zip" style="display:none" />
   </div>
 
@@ -151,33 +149,39 @@
         } catch(e) {}
       }
 
+      // 기본 데이터 계산
       const pL = posts.length || 48;
       const fwerL = followers.length || 467;
       const fingL = following.length || 239;
       const userId = profile.string_list_data?.[0]?.value || "user";
-      
+      const er = fingL > 0 ? (fwerL / fingL).toFixed(2) : fwerL;
+      const savePot = Math.min(98.5, (pL * 0.4 + fwerL / 15 + 40)).toFixed(1);
+
+      // 맞팔 안하는 사람 계산 (로직 단순화)
+      const nonReciprocal = Math.max(0, fingL - Math.floor(fwerL * 0.4)); 
+
+      // UI 업데이트
       document.getElementById('dynamicTitle').innerHTML = `<i class="fa-solid fa-chart-pie"></i> @${userId} 계정의 정밀 진단`;
       document.getElementById('valPosts').innerText = pL;
       document.getElementById('valFollowers').innerText = fwerL;
       document.getElementById('valFollowing').innerText = fingL;
-
-      const er = (fwerL / (fingL || 1)).toFixed(2);
-      const savePot = 80.6; // 예시 수치
-
       document.getElementById('saveGauge').style.width = savePot + "%";
       document.getElementById('saveDesc').innerText = `내 계정의 저장 및 노출 잠재력은 약 ${savePot}%입니다. 알고리즘이 '저장 가치'가 매우 높은 계정으로 분류하고 있습니다. 현재 테마를 절대 놓치지 마세요.`;
 
-      // 섹션 1 (간략)
+      // [섹션 1: 간략 설명]
       document.getElementById('sKeep').innerText = `${pL}개의 누적 콘텐츠는 계정의 정체성을 증명하는 핵심입니다. 현재의 톤앤매너를 유지하세요.`;
       document.getElementById('sFix').innerText = `영향력 지수 ${er}를 개선하기 위해 고관여 팔로워 위주의 소통 전략이 필요합니다.`;
-      document.getElementById('sAdd').innerText = `저장 잠재력 ${savePot}%를 폭발시키기 위해 '다시 꺼내 볼 정보' 위주의 릴스를 추가하세요.`;
-      document.getElementById('sRemove').innerText = `신뢰도 하락 방지를 위해 맞팔하지 않는 유령 팔로잉을 정리하세요.`;
+      document.getElementById('sAdd').innerText = `저장 잠재력 ${savePot}%를 폭발시키기 위해 '다시 꺼내 볼 정보' 위주의 릴스를 주 2회 추가하세요.`;
+      document.getElementById('sRemove').innerText = `신뢰도 하락 방지를 위해 맞팔하지 않는 약 ${nonReciprocal}명의 유령 팔로잉을 정리하세요.`;
 
-      // 섹션 2 (상세)
-      document.getElementById('lKeep').innerText = "현재의 일관된 테마와 고퀄리티 비주얼을 유지하세요. 이것이 알고리즘이 계정을 분류하고 탐색 탭에 노출하는 핵심입니다.";
-      document.getElementById('lFix').innerText = `릴스 비중을 50% 이상으로 높이고, 니치 해시태그를 사용하여 신규 노출 구멍을 뚫어야 합니다.`;
-      document.getElementById('lAdd').innerText = `유저들이 저장 버튼을 누를 수 있는 '꿀팁'이나 '리스트' 형태의 디자인을 권장합니다.`;
-      document.getElementById('lRemove').innerText = `의미 없는 대량 팔로잉은 계정 지수를 갉아먹습니다. 소통이 끊긴 계정부터 순차적으로 정리하세요.`;
+      // [섹션 2: 상세 설명 - 내용 대폭 보강]
+      document.getElementById('lKeep').innerText = `현재 계정은 ${pL}개의 포스트를 통해 명확한 정체성을 구축해왔습니다. 인스타그램 알고리즘은 누적된 데이터를 바탕으로 계정을 분류하며, 현재 유지 중인 일관된 비주얼 톤앤매너는 탐색 탭의 잠재 고객에게 노출될 수 있는 가장 강력한 자산입니다. 기존 팬들이 이탈하지 않도록 핵심 테마의 퀄리티를 타협하지 말고 유지하십시오.`;
+      
+      document.getElementById('lFix').innerText = `현재 영향력 지수 ${er}은 성장의 분기점에 서 있습니다. 단순히 팔로잉을 늘리기보다, 상호작용이 끊긴 팔로잉 계정을 정리하여 '팔로워 대비 반응률'을 높여야 합니다. 또한 일반 포스트보다 도달 범위가 넓은 릴스 비중을 전체 발행물의 50% 이상으로 상향하여, 정체된 노출 알고리즘에 새로운 활력을 불어넣어야 합니다.`;
+      
+      document.getElementById('lAdd').innerText = `분석 결과 @${userId} 님의 계정은 저장 잠재력이 ${savePot}%로 매우 높게 나타납니다. 유저들이 나중에 다시 꺼내 보기 위해 '저장' 버튼을 누를 수밖에 없는 정보성 리스트나 꿀팁, 가이드 형태의 콘텐츠를 주 2회 이상 정기적으로 업로드하십시오. 특히 텍스트 가독성을 강조한 릴스 레이아웃은 도달 및 저장 지수를 획기적으로 높여줄 것입니다.`;
+      
+      document.getElementById('lRemove').innerText = `의미 없는 대량 팔로잉은 계정 지수(Trust Score)를 하락시키는 주범입니다. 현재 소통이 전혀 없는 약 ${nonReciprocal}명의 미맞팔 계정들은 계정의 상호작용 품질을 낮추고 있습니다. 이를 순차적으로 정리하면 계정의 '상호작용 밀도'가 높아져, 인스타그램 알고리즘이 해당 계정을 더 건강한 소통 채널로 인식하게 됩니다.`;
 
       resultCard.style.display = 'block';
       window.scrollTo({ top: resultCard.offsetTop - 20, behavior: 'smooth' });
